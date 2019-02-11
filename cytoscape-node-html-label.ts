@@ -114,7 +114,11 @@ interface CytoscapeNodeHtmlParams {
 
     updateData(data: any) {
       try {
-        this._node.innerHTML = this.tpl(data);
+        const x = this.tpl(data);
+        if (typeof(x) === "string")
+            this._node.innerHTML = x;
+        else
+            this._node.appendChild(x); //element
       } catch (err) {
         console.error(err);
       }

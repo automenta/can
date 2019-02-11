@@ -2,313 +2,36 @@
 
 <html>
 
-	<head>
-		<title></title>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 
-		<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+        <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
+        <script src="https://unpkg.com/cytoscape-cxtmenu@3.0.2/cytoscape-cxtmenu.js"></script>
 
-    <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-		<script src="https://unpkg.com/cytoscape-cxtmenu@3.0.2/cytoscape-cxtmenu.js"></script>
+        <script src="cytoscape-node-html-label.js"></script>
 
-    <script src="cytoscape-node-html-label.js"></script>
+        <!-- https://github.com/OSMBuildings/OSMBuildings -->
+        <link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
+        <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
 
-    <!-- https://github.com/OSMBuildings/OSMBuildings -->
-    <link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
-    <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
+        <!-- https://github.com/yohanboniface/Leaflet.RevealOSM -->
 
-    <!-- https://github.com/yohanboniface/Leaflet.RevealOSM -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.28.2/jsoneditor.min.css" rel="stylesheet" type="text/css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.28.2/jsoneditor.min.js"></script>
 
-		<style>
-			body {
-				font-family: monospace;
-				position: fixed;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-				overflow: hidden;
-			}
+        <link href="index.css" rel="stylesheet" type="text/css">
+        <script src="index.js"></script>
+	
+    </head>
 
-			#cy {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				left: 0;
-				top: 0;
-				z-index: 999;
-			}
+    <body>
+        <div id="cy"></div>
+        <div id="map"></div>
 
-			h1 {
-				opacity: 0.5;
-				font-size: 1em;
-			}
-
-			/* you can set the disabled style how you like on the text/icon */
-			.cxtmenu-disabled {
-				opacity: 0.333;
-			}
-
-#cy {
-    pointer-events: none;
-}
-
-      .cy-title {
-    text-align: center;
-    font-size: 13px;
-    width: 130px;
-}
-
-.cy-title__name {
-    color: #000;
-    font-size: 0.85em;
-    line-height: 1em;
-    margin-bottom: 0.4em;
-    text-transform: capitalize;
-}
-
-.cy-title__info {
-    color: #9c9c9c;
-    font-size: 0.9em;
-    line-height: 0.9em;
-    margin-bottom: 0.5em;
-}
-
-.cy-title__main {
-    color: #2b2b2b;
-    font-size: 1.1em;
-    background: rgba(253, 255, 128, 0.63);
-    text-transform: capitalize;
-    margin-bottom: 0.4em;
-}
-.cy-form {
-  pointer-events:all;
-  z-index:2000;
-  opacity: 0.75;
-}
-.cy-title__p1 {
-  border: 1px solid gray;
-  z-index: 10;
-}
-.cy-title__p2 {
-  border: 1px solid gray;
-}
-.cy-title__none {
-    color: rgba(78, 78, 78, 0.9);
-    font-size: 1.1em;
-    text-transform: capitalize;
-    font-style: italic;
-    margin-top: 0.4em;
-    text-decoration: line-through;
-}
-		</style>
-
-		<script>
-			window.addEventListener('DOMContentLoaded', function(){
-
-/*				var cy = window.cy = cytoscape({
-					container: document.getElementById('cy'),
-
-					ready: function(){
-					},
-
-					style: [
-						{
-							selector: 'node',
-							css: {
-								'content': 'data(name)'
-							}
-						},
-
-						{
-							selector: 'edge',
-							css: {
-								'curve-style': 'bezier',
-								'target-arrow-shape': 'triangle'
-							}
-						}
-					],
-
-					elements: {
-						nodes: [
-							{ data: { id: 'j', name: 'A' } },
-							{ data: { id: 'e', name: 'B' } },
-							{ data: { id: 'k', name: 'C' } },
-							{ data: { id: 'g', name: 'C' } }
-						],
-						edges: [
-							{ data: { source: 'j', target: 'e' } },
-							{ data: { source: 'j', target: 'k' } },
-							{ data: { source: 'j', target: 'g' } },
-							{ data: { source: 'e', target: 'j' } },
-							{ data: { source: 'e', target: 'k' } },
-							{ data: { source: 'k', target: 'j' } },
-							{ data: { source: 'k', target: 'e' } },
-							{ data: { source: 'k', target: 'g' } },
-							{ data: { source: 'g', target: 'j' } }
-						]
-					}
-				});*/
-
-        // create Cy instance
-var cy = cytoscape({
-    container: document.getElementById('cy'),
-    layout: {
-        name: 'cose'
-    },
-    elements: { // your cy elements
-        nodes: [
-          { data: { id: 'j', name: '1' }, classes: 'l1' },
-          { data: { id: 'e', name: '2' }, classes: 'l1' },
-          { data: { id: 'k', name: '3' }, classes: 'l2' },
-          { data: { id: 'g', name: '4' }, classes: 'l2' }
-        ],
-        edges: [
-          { data: { source: 'j', target: 'e' } },
-          { data: { source: 'j', target: 'k' } },
-          { data: { source: 'j', target: 'g' } },
-          { data: { source: 'e', target: 'j' } },
-          { data: { source: 'e', target: 'k' } },
-          { data: { source: 'k', target: 'j' } },
-          { data: { source: 'k', target: 'e' } },
-          { data: { source: 'k', target: 'g' } },
-          { data: { source: 'g', target: 'j' } }
-        ]
-    }
-});
-
-// set nodeHtmlLabel for your Cy instance
-cy.nodeHtmlLabel([{
-        query: '.l1',
-        /*valign: "top",
-        halign: "left",
-        valignBox: "top",
-        halignBox: "left",*/
-        tpl: function(data) {
-            return '<div class="cy-form"><button class="cy-title__p1">' + data.id + '</button>' + '<input type="text"  style="width:4em" value="' + data.name + '"/></div>';
-        }
-    },
-    {
-        query: '.l2',
-        tpl: function(data) {
-            return '<a class="cy-title__p2">' + data.id + '</a>' + '<p  class="cy-title__p2">' + data.name + '</p>';
-        }
-    }
-]);
-/*
-				cy.cxtmenu({
-					selector: 'node, edge',
-
-					commands: [
-						{
-							content: '<span class="fa fa-flash fa-2x"></span>',
-							select: function(ele){
-								console.log( ele.id() );
-							}
-						},
-
-						{
-							content: '<span class="fa fa-star fa-2x"></span>',
-							select: function(ele){
-								console.log( ele.data('name') );
-							},
-							enabled: false
-						},
-
-						{
-							content: 'Text',
-							select: function(ele){
-								console.log( ele.position() );
-							}
-						}
-					]
-				});
-
-				cy.cxtmenu({
-					selector: 'core',
-
-					commands: [
-						{
-							content: 'bg1',
-							select: function(){
-								console.log( 'bg1' );
-							}
-						},
-
-						{
-							content: 'bg2',
-							select: function(){
-								console.log( 'bg2' );
-							}
-						}
-					]
-				});
-*/
-        /*cy.nodeHtmlLabel([
-                {
-                    query: 'node',
-                    cssClass: 'cy-title',
-                    valign: "top",
-                    valignBox: "top",
-                    tpl: function (data) {
-                        return '<p class="cy-title__name">' + data.name + '</p>' +
-                            '<p  class="cy-title__info">' + data.id + '</p>';
-                    }
-                },
-                {
-                    query: 'node[type=0]',
-                    cssClass: 'cy-title',
-                    valign: "top",
-                    valignBox: "top",
-                    tpl: function (data) {
-                        return '<p class="cy-title__main">' + data.name + '</p>';
-                    }
-                },
-                {
-                    query: 'node[type=2]',
-                    cssClass: 'cy-title',
-                    valign: "bottom",
-                    valignBox: "bottom",
-                    tpl: function (data) {
-                        return '<p class="cy-title__none">' + data.name + '</p>';
-                    }
-                }
-            ]); */
-
-
-            {
-              var osmb = new OSMBuildings({
-                container: 'map',
-                position: {
-                  //latitude: 52.52000, longitude: 13.41000
-                  latitude: 28.5860718, longitude: -80.652923
-                },
-                zoom: 16,
-                minZoom: 15,
-                maxZoom: 22
-              });
-
-              osmb.addMapTiles(
-                'https://{s}.tiles.mapbox.com/v3/osmbuildings.kbpalbpk/{z}/{x}/{y}.png',
-                {
-                  attribution: '© Data <a href="http://openstreetmap.org/copyright/">OpenStreetMap</a> · © Map <a href="http://mapbox.com">Mapbox</a>'
-                }
-              );
-
-              osmb.addGeoJSONTiles('http://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json');
-            }
-
-			});
-
-
-		</script>
-	</head>
-
-	<body>
-		<div id="cy"></div>
-    <div id="map"></div>
-
-	</body>
+    </body>
 
 </html>
