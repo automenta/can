@@ -1,2 +1,5 @@
 cytoscape-node-html-label.js
 nbproject/
+.idea/
+node_modules/
+package-lock.json
