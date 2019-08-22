@@ -13,7 +13,7 @@ interface CytoscapeNodeHtmlParams {
     halignBox?: IHAlign;
     valignBox?: IVAlign;
     cssClass?: string;
-    tpl?: (d: any) => string;
+    //tpl?: (d: any) => string;
 }
 
 (function () {
@@ -59,18 +59,15 @@ interface CytoscapeNodeHtmlParams {
     }
 
     class LabelElement {
-        public tpl: (container: any, data: any) => void;
+        //public tpl: (container: any, data: any) => void;
 
-        private _position: number[];
+        private _position: number[] = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY];
         private _node: HTMLElement;
         private _align: [number, number, number, number];
+        private contentExpand: Boolean = false;
 
 
-        constructor({
-                        node,
-                        position = null,
-                        data = null
-                    }: ILabelElement,
+        constructor(node : HTMLElement, payload: any,
                     params: CytoscapeNodeHtmlParams) {
 
             this.updateParams(params);
@@ -78,22 +75,26 @@ interface CytoscapeNodeHtmlParams {
 
             this.initStyles(params.cssClass);
 
+            const data = payload.data;
             if (data) {
                 this.updateData(data);
             }
-            if (position) {
+            /*if (position) {
                 this.updatePosition(position);
-            }
+            }*/
         }
 
+
         updateParams({
-                         tpl = () => "",
                          cssClass = null,
                          halign = "center",
                          valign = "center",
                          halignBox = "center",
                          valignBox = "center"
                      }: CytoscapeNodeHtmlParams) {
+
+
+            const NOP = () => "";
 
             const _align = {
                 "top": -.5,
@@ -110,11 +111,12 @@ interface CytoscapeNodeHtmlParams {
                 100 * (_align[valignBox] - 0.5)  //pct
             ];
 
-            this.tpl = tpl;
+
+
         }
 
         updateData(data: any) {
-            this.tpl(this._node, data);
+            data.tpl(this._node, data);
         }
 
         getNode(): HTMLElement {
@@ -139,8 +141,7 @@ interface CytoscapeNodeHtmlParams {
 
         private _renderPosition(position: ICytoscapeNodeHtmlPosition) {
             var prev = this._position;
-            if (!prev)
-                this._position = prev = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY];
+
             const x = position.x;// + this._align[0] * position.w;
             const y = position.y;// + this._align[1] * position.h;
 
@@ -149,15 +150,30 @@ interface CytoscapeNodeHtmlParams {
                 prev[0] = x;
                 prev[1] = y;
 
-                //TODO cache better
-                const valRel = `translate(${this._align[2]}%,${this._align[3]}%) `;
-                const valAbs = `translate(${x.toFixed(0)}px,${y.toFixed(0)}px) `; //0.5 if higher res?
-                const val = valRel + valAbs;
 
-                const stl = <any>this._node.style;
-                stl.webkitTransform = val;
-                stl.msTransform = val;
+
+                //TODO cache better
+                const val = `translate(${
+                    this._align[2]
+                }%,${
+                    this._align[3]
+                }%)translate(${
+                    x.toFixed(0)
+                }px,${
+                    y.toFixed(0)
+                }px) `;
+
+
+                const stl = this._node.style;
+                /*stl.webkitTransform = val;
+                stl.msTransform = val;*/
                 stl.transform = val;
+
+                if (this.contentExpand) {
+                    const innerScale = 0.75;
+                    stl.width = (innerScale * position.w).toFixed(0);
+                    stl.height = (innerScale * position.h).toFixed(0);
+                }
 
             }
         }
@@ -180,20 +196,19 @@ interface CytoscapeNodeHtmlParams {
         addOrUpdateElem(id: string, param: CytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
 
             const cur = this._elements[id];
+
+
             if (cur) {
                 cur.updateParams(param);
                 cur.updateData(payload.data);
                 cur.updatePosition(payload.position);
             } else {
-                let nodeContainer = document.createElement("div");
+                const nodeContainer = document.createElement("div")
+
                 //nodeContainer.style.scale = '1';
                 this._node.appendChild(nodeContainer);
 
-                this._elements[id] = new LabelElement({
-                    node: nodeContainer,
-                    data: payload.data,
-                    position: payload.position
-                }, param);
+                this._elements[id] = new LabelElement(nodeContainer, payload, param);
             }
         }
 
@@ -215,8 +230,8 @@ interface CytoscapeNodeHtmlParams {
             const val = `translate(${pan.x.toFixed(0)}px,${pan.y.toFixed(0)}px) scale(${zoom})`;
 
             const stl = <any>this._node.style;
-            stl.webkitTransform = val;
-            stl.msTransform = val;
+            /*stl.webkitTransform = val;
+            stl.msTransform = val;*/
             stl.transform = val;
         }
     }
@@ -285,6 +300,7 @@ interface CytoscapeNodeHtmlParams {
         }
 
         function addCyHandler(ev: ICyEventObject) {
+
             let target = ev.target;
             let param = $$find(_params.slice().reverse(), x => target.is(x.query));
             if (param) {
@@ -317,7 +333,7 @@ interface CytoscapeNodeHtmlParams {
         function updateDataCyHandler(ev: ICyEventObject) {
             const target = ev.target;
             const param = $$find(_params.slice().reverse(), x => target.is(x.query));
-            setTimeout(() => {
+            //setTimeout(() => {
                 let targetID = target.id();
                 if (param) {
                     labels.addOrUpdateElem(targetID, param, {
@@ -327,7 +343,7 @@ interface CytoscapeNodeHtmlParams {
                 } else {
                     labels.removeElemById(targetID);
                 }
-            }, 0);
+            //}, 0);
         }
 
         function wrapCyHandler({cy}: ICyEventObject) {

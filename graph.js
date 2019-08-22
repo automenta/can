@@ -1,6 +1,9 @@
 "use strict";
 
 function graph(container) {
+
+    var fps = 30;
+
     const cy = cytoscape({
         container: container,
         pixelRatio: 1
@@ -22,6 +25,23 @@ function graph(container) {
                 resizeToContentCueImage:
                     'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
             });
+
+
+
+            cy.nodeHtmlLabel([{
+                query: ".html",
+                /*tpl: (container, data) => {
+                    if (data.tpl) {
+                        data.tpl(container, data);
+                        console.log(container);
+                    } } */
+                    //console.log(container, data);
+                    /*container.innerHTML = //'<a class="cy-title__p2">' + data.id + '</a>' + '<p  class="cy-title__p2">' + data.name + '</p>';
+                        '<div style="background-color:rgba(0,0,255.0,0.25)"><button>test</button><div contentEditable>sd hfsrpf23h2 phf3f32 kjh23kjh 23kh23khk2hf 23h k23hf23 hf2 h2khf23k</div></div>';*/
+
+
+            }]);
+
         },
         wheelSensitivity: 0.5,
         style: [
@@ -52,28 +72,11 @@ function graph(container) {
         layout: {
             name: 'cose'
         },
-        elements: { // your cy elements
-            nodes: [
-                {data: {id: 'j', name: '1'}, classes: 'l1'},
-                {data: {id: 'e', name: '2'}, classes: 'l2'},
-                {data: {id: 'k', name: '3'}, classes: 'l3'},
-                {data: {id: 'g', name: '4'}, classes: 'l4'}
-            ],
-            edges: [
-                {data: {source: 'j', target: 'e'}},
-                {data: {source: 'j', target: 'k'}},
-                {data: {source: 'j', target: 'g'}},
-                {data: {source: 'e', target: 'j'}},
-                {data: {source: 'e', target: 'k'}},
-                {data: {source: 'k', target: 'j'}},
-                {data: {source: 'k', target: 'e'}},
-                {data: {source: 'k', target: 'g'}},
-                {data: {source: 'g', target: 'j'}}
-            ]
-        }
+        /*elements: {
+        }*/
     });
 
-    var fps = 60;
+
     cy.renderer.fullFpsTime = 1000/fps;
 
 
@@ -107,38 +110,19 @@ function graph(container) {
     });
 
 // set nodeHtmlLabel for your Cy instance
-    cy.nodeHtmlLabel([{
-        query: ".l1",
-        /*valign: "top",
-        halign: "left",
-        valignBox: "top",
-        halignBox: "left",*/
-        tpl: (container, data) => {
+    //cy.nodeHtmlLabel([{query: ".l1"}]);
+    //cy.nodeHtmlLabel([{query: ".l2"}]);
+        // //query: ".l1",
+        // /*valign: "top",
+        // halign: "left",
+        // valignBox: "top",
+        // halignBox: "left",*/
+        //
 
-             jsonEdit({
-                 "Array": [1, 2, 3],
-                 "Boolean": true,
-                 "Null": null,
-                 "Number": 123,
-                 "Object": {"a": "b", "c": "d"},
-                 "String": "Hello World"
-             }, container)
+        //
 
-            //container.innerHTML = '<iframe src="http://openjdk.java.net"></iframe>';
-            }
-        }, {
-            query: ".l2",
-            tpl: (container, data) => {
-                container.innerHTML = //'<a class="cy-title__p2">' + data.id + '</a>' + '<p  class="cy-title__p2">' + data.name + '</p>';
-                    '<div style="background-color:rgba(0,0,255.0,0.25)"><button>test</button><div contentEditable>sd hfsrpf23h2 phf3f32 kjh23kjh 23kh23khk2hf 23h k23hf23 hf2 h2khf23k</div></div>';
-            }
-        }, {
-            query: ".l3",
-            tpl: (container, data) => {
-                container.innerHTML = "<input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea>";
-            }
-        }]);
-
+    $("canvas")[0].remove(); //HACK to remove useless layers
+    //TODO 2, etc
 
 
     return cy;

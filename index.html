@@ -7,7 +7,10 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
+        <link href="index.css" rel="stylesheet" type="text/css">
+
         <script src="debounce.js"></script>
+        <script src="lru.js"></script>
 
         <!-- https://github.com/OSMBuildings/OSMBuildings -->
         <!--<link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
@@ -26,6 +29,7 @@
         <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
 
         <script src="konva.js"></script>
+
         <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
         <script src="cytoscape-node-resize.js"></script>
 
@@ -38,10 +42,12 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.css" rel="stylesheet" type="text/css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.js"></script>
 
-        <script src="graph.js"></script>
         <script src="jsonedit.js"></script>
 
-        <link href="index.css" rel="stylesheet" type="text/css">
+        <script src="graph.js"></script>
+        <script src="terminal.js"></script>
+        <script src="attn.js"></script>
+
 
     </head>
 
@@ -55,81 +61,71 @@
     <script>
 
         window.addEventListener('DOMContentLoaded', () => {
-            graph(document.getElementById('graph'));
-            $("canvas")[0].remove(); //HACK to remove useless layers
-            //TODO 2, etc
 
+            const g = graph(document.getElementById('graph'));
+            const t = terminal();
 
-
-            const term = $('#term');
-            const termStyle = term[0].style;
-
-
-            var focused = false;
-            const _focusUpdate = ()=>{
-                if (focused) {
-                    //termStyle.transform = 'scale(1)';
-                    termStyle.zoom = 2;
-                    termStyle.opacity = 0.9;
-                    termStyle.width = "25%";
-                    termStyle.pointerEvents = 'all';
-                    termStyle.backgroundColor = 'black';
+            const a = attention(g, (x, container)=>{
+                if (typeof x === "object" && x.ELEMENT_NODE /* HACK find better way of testing DOM element instances */) {
+                    container.appendChild(x);
                 } else {
-                    termStyle.zoom = 0.6;
-                    //termStyle.transform = 'scale(0.5)';
-                    termStyle.opacity = 0.5;
-                    termStyle.width = "80px";
-                    termStyle.pointerEvents = 'none';
-                    termStyle.backgroundColor = 'transparent';
+                    jsonEdit(x, container);
                 }
-            };
-            const motionFocus = e => {
-                if (e.originalEvent.pageX < 80) { //HACK TODO Use some comparison with actual terminal screen position
-                    term.focus();
-                    //hovering = true;
-                } else {
-                    //hovering = false;
-                }
-            };
-            $('body').mousemove(motionFocus);
-
-            const focusUpdate = debounce(_focusUpdate, 500);
-            term.focusin(()=> {
-                focused = true;
-                _focusUpdate();
-            });
-            term.focusout(()=> {
-                focused = false;
-                focusUpdate();
             });
 
-
-            jQuery(function($, undefined) {
-                /*$.terminal.defaults.formatters.push(
-                    $.terminal.prism.bind(null, 'javascript')
-                );*/
-                term.terminal(function(command) {
-                    if (command !== '') {
-                        try {
-                            var result = window.eval(command);
-                            if (result !== undefined) {
-                                this.echo(new String(result));
-                            }
-                        } catch(e) {
-                            this.error(new String(e));
-                        }
-                    } else {
-                        this.echo('');
-                    }
-                }, {
-                    greetings: null,
-                    name: 'js_demo',
-                    height: '100%',
-                    width: '25%',
-                    prompt: '▒ ',
-                    invokeMethods: true
-                });
+            a.put('a', $('<button>x</button>')[0]);
+                //[1,2,3]);
+            a.put('b', {x:"y", z: [0,1]});
+            a.put('c', {
+                "Array": [1, 2, 3],
+                "Boolean": true,
+                "Null": null,
+                "Number": 123,
+                "Object": {"a": "b", "c": "d"},
+                "String": "Hello World"
             });
+            a.put('d', $("<div><input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea></div>")[0]);
+
+            // nodes: [
+            //     {data: {id: 'j', name: '1', tpl: (container, data) => {
+            //
+            //                 jsonEdit({
+            //                     "Array": [1, 2, 3],
+            //                     "Boolean": true,
+            //                     "Null": null,
+            //                     "Number": 123,
+            //                     "Object": {"a": "b", "c": "d"},
+            //                     "String": "Hello World"
+            //                 }, container);
+            //
+            //                 //container.innerHTML = '<iframe src="http://openjdk.java.net"></iframe>';
+            //             }, classes: 'html' } },
+            //     {data: {id: 'e', name: '2', tpl: (container,data)=>{
+            //                 container.innerHTML = '<button>x</button>';
+            //             } }, classes: 'html'},
+            //     {data: {id: 'ee', tpl: (container,data)=>{
+            //                 container.innerHTML =
+            //                     "<input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea>";
+            //             } }, classes: 'html'},
+            //     {data: {id: 'k', name: '3'}, classes: 'l3'},
+            //     {data: {id: 'g', name: '4'}, classes: 'l4'}
+            // ],
+            //     edges: [
+            //     {data: {source: 'j', target: 'e'}},
+            //     {data: {source: 'j', target: 'k'}},
+            //     {data: {source: 'j', target: 'g'}},
+            //     {data: {source: 'e', target: 'j'}},
+            //     {data: {source: 'e', target: 'k'}},
+            //     {data: {source: 'k', target: 'j'}},
+            //     {data: {source: 'k', target: 'e'}},
+            //     {data: {source: 'k', target: 'g'}},
+            //     {data: {source: 'g', target: 'j'}}
+            // ]
+
+
+
+
+
 
         });
 
