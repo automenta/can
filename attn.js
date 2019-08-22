@@ -1,5 +1,5 @@
 
-function attention(g, valueFn) {
+function attention(g, nodizer) {
     const layout = debounce(()=> g.layout({name: 'cose'}).run(), 100);
 
     this.map = new LRUMap({
@@ -7,16 +7,14 @@ function attention(g, valueFn) {
         accessUpdatesTimestamp: true,
         onAdd: (key,value)=>{
             console.log('add', key, value);
-            var eles = g.add([
-                {
-                    group: 'nodes',
-                    classes: 'html',
-                    data: {
-                        id: key,
-                        tpl: (container) => valueFn(value, container)
-                    }
-                }
-            ]);
+
+            const a = {
+                group: 'nodes',
+                classes: 'html',
+                data: { id:key, value:value, tpl: nodizer },
+            };
+            
+            var eles = g.add([a]);
 
             layout();
         },

@@ -28,6 +28,8 @@
         <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
         <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
 
+        <script src="https://cdn.jsdelivr.net/gh/joewalnes/reconnecting-websocket@latest/reconnecting-websocket.min.js"></script>
+
         <script src="konva.js"></script>
 
         <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
@@ -64,11 +66,22 @@
             const g = graph(document.getElementById('graph'));
             const t = terminal();
 
-            const a = attention(g, (x, container)=>{
-                if (typeof x === "object" && x.ELEMENT_NODE /* HACK find better way of testing DOM element instances */) {
+            const a = attention(g, (container, x)=>{
+
+                x = x.value;
+
+                console.log(container, x);
+
+                if (typeof x === "string") {
+                    container.innerHTML = x.toString();
+                } else if (typeof x === "object" && x.ELEMENT_NODE /* HACK find better way of testing DOM element instances */) {
+
                     container.appendChild(x);
+
                 } else {
+
                     jsonEdit(x, container);
+
                 }
             });
 
@@ -84,6 +97,24 @@
                 "String": "Hello World"
             });
             a.put('d', $("<div><input type='text' size='10'/><button>HTML</button><textarea cols='25' rows='3'></textarea></div>")[0]);
+
+
+            var ws = new ReconnectingWebSocket('ws://xyz:60606');
+            const channel = ws.url;
+            var mid = 0;
+            //ws.debug = true;
+            ws.onmessage = (e)=>{
+              //https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
+                const y = JSON.parse(e.data, null);
+                a.put(channel + '_' + (mid++), y);
+            };
+            ws.onopen = ()=>{
+                console.log('open', ws);
+                setTimeout(()=>
+                ws.send('x.getClass()'), 2000);
+            };
+
+
 
             // nodes: [
             //     {data: {id: 'j', name: '1', tpl: (container, data) => {
