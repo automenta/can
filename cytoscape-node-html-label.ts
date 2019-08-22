@@ -122,6 +122,7 @@ interface CytoscapeNodeHtmlParams {
         }
 
         updatePosition(pos: ICytoscapeNodeHtmlPosition) {
+
             this._renderPosition(pos);
         }
 
@@ -178,7 +179,7 @@ interface CytoscapeNodeHtmlParams {
 
         addOrUpdateElem(id: string, param: CytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
 
-            let cur = this._elements[id];
+            const cur = this._elements[id];
             if (cur) {
                 cur.updateParams(param);
                 cur.updateData(payload.data);
@@ -204,7 +205,7 @@ interface CytoscapeNodeHtmlParams {
         }
 
         updateElemPosition(id: string, position?: ICytoscapeNodeHtmlPosition) {
-            let ele = this._elements[id];
+            const ele = this._elements[id];
             if (ele) {
                 ele.updatePosition(position);
             }
@@ -272,13 +273,13 @@ interface CytoscapeNodeHtmlParams {
 
         function createNodesCyHandler({cy}: ICyEventObject) {
             _params.forEach(x => {
-                cy.elements(x.query).forEach((d: any) => {
-                    if (d.isNode()) {
+                cy.nodes(x.query).forEach((d: any) => {
+                    //if (d.isNode()) {
                         labels.addOrUpdateElem(d.id(), x, {
                             position: getNodePosition(d),
                             data: d.data()
                         });
-                    }
+                    //}
                 });
             });
         }
@@ -296,10 +297,10 @@ interface CytoscapeNodeHtmlParams {
 
         function layoutstopHandler({cy}: ICyEventObject) {
             _params.forEach(x => {
-                cy.elements(x.query).forEach((d: any) => {
-                    if (d.isNode()) {
+                cy.nodes(x.query).forEach((d: any) => {
+                    //if (d.isNode()) {
                         labels.updateElemPosition(d.id(), getNodePosition(d));
-                    }
+                    //}
                 });
             });
         }

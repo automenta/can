@@ -1,6 +1,6 @@
 (() => {
     'use strict';
-    const debounce = (function () {
+    const debounce = (() => {
         /**
          * lodash 3.1.1 (Custom Build) <https://lodash.com/>
          * Build: `lodash modern modularize exports="npm" -o ./`
@@ -235,7 +235,7 @@
     })();
 
     // registers the extension on a cytoscape lib ref
-    const register = function (cytoscape, $, Konva) {
+    const register = (cytoscape, $, Konva) => {
 
         // can't register if required libraries does not exist
         if (!cytoscape || !$ || !Konva) {
@@ -259,75 +259,57 @@
                 boundingRectangleLineWidth: 1.5,
                 zIndex: 999,
 
-                moveSelectedNodesOnKeyEvents: function () {
-                    return true;
-                },
+                moveSelectedNodesOnKeyEvents: () => true,
 
-                minWidth: function (node) {
+                minWidth: node => {
                     const data = node.data("resizeMinWidth");
                     return data ? data : 15;
                 }, // a function returns min width of node
-                minHeight: function (node) {
+                minHeight: node => {
                     const data = node.data("resizeMinHeight");
                     return data ? data : 15;
                 }, // a function returns min height of node
 
                 // Getters for some style properties the defaults returns ele.css('property-name')
                 // you are encouraged to override these getters
-                getCompoundMinWidth: function (node) {
-                    return node.css('min-width');
-                },
-                getCompoundMinHeight: function (node) {
-                    return node.css('min-height');
-                },
-                getCompoundMinWidthBiasRight: function (node) {
-                    return node.css('min-width-bias-right');
-                },
-                getCompoundMinWidthBiasLeft: function (node) {
-                    return node.css('min-width-bias-left');
-                },
-                getCompoundMinHeightBiasTop: function (node) {
-                    return node.css('min-height-bias-top');
-                },
-                getCompoundMinHeightBiasBottom: function (node) {
-                    return node.css('min-height-bias-bottom');
-                },
+                getCompoundMinWidth: node => node.css('min-width'),
+                getCompoundMinHeight: node => node.css('min-height'),
+                getCompoundMinWidthBiasRight: node => node.css('min-width-bias-right'),
+                getCompoundMinWidthBiasLeft: node => node.css('min-width-bias-left'),
+                getCompoundMinHeightBiasTop: node => node.css('min-height-bias-top'),
+                getCompoundMinHeightBiasBottom: node => node.css('min-height-bias-bottom'),
 
                 // These optional function will be executed to set the width/height of a node in this extension
                 // Using node.css() is not a recommended way (http://js.cytoscape.org/#eles.style) to do this. Therefore, overriding these defaults
                 // so that a data field or something like that will be used to set node dimentions instead of directly calling node.css()
                 // is highly recommended (Of course this will require a proper setting in the stylesheet).
-                setWidth: function (node, width) {
+                setWidth: (node, width) => {
                     node.css('width', width);
                 },
-                setHeight: function (node, height) {
+                setHeight: (node, height) => {
                     node.css('height', height);
                 },
-                setCompoundMinWidth: function (node, minWidth) {
+                setCompoundMinWidth: (node, minWidth) => {
                     node.css('min-width', minWidth);
                 },
-                setCompoundMinHeight: function (node, minHeight) {
+                setCompoundMinHeight: (node, minHeight) => {
                     node.css('min-height', minHeight);
                 },
-                setCompoundMinWidthBiasLeft: function (node, minWidthBiasLeft) {
+                setCompoundMinWidthBiasLeft: (node, minWidthBiasLeft) => {
                     node.css('min-width-bias-left', minWidthBiasLeft);
                 },
-                setCompoundMinWidthBiasRight: function (node, minHeightBiasRight) {
+                setCompoundMinWidthBiasRight: (node, minHeightBiasRight) => {
                     node.css('min-width-bias-right', minHeightBiasRight);
                 },
-                setCompoundMinHeightBiasTop: function (node, minHeightBiasTop) {
+                setCompoundMinHeightBiasTop: (node, minHeightBiasTop) => {
                     node.css('min-height-bias-top', minHeightBiasTop);
                 },
-                setCompoundMinHeightBiasBottom: function (node, minHeightBiasBottom) {
+                setCompoundMinHeightBiasBottom: (node, minHeightBiasBottom) => {
                     node.css('min-height-bias-bottom', minHeightBiasBottom);
                 },
 
-                isFixedAspectRatioResizeMode: function (node) {
-                    return node.is(".fixedAspectRatioResizeMode")
-                },// with only 4 active grapples (at corners)
-                isNoResizeMode: function (node) {
-                    return node.is(".noResizeMode, :parent")
-                }, // no active grapples
+                isFixedAspectRatioResizeMode: node => node.is(".fixedAspectRatioResizeMode"),// with only 4 active grapples (at corners)
+                isNoResizeMode: node => node.is(".noResizeMode, :parent"), // no active grapples
 
                 cursors: { // See http://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor
                     // May take any "cursor" css property
@@ -525,9 +507,7 @@
                     perfectDrawEnabled: false,
                     transformsEnabled: 'position'
                 });
-                rect.intersects = function () {
-                    return false;
-                };
+                rect.intersects = () => false;
                 rect.transformsEnabled = 'position'; //https://konvajs.org/docs/performance/All_Performance_Tips.html
                 rect.listening(false);
                 // add the shape to the layer
@@ -578,13 +558,6 @@
                 });
 
 
-                this.shape.intersects = function () {
-                    return false;
-                };
-                this.shape.getIntersection = function () {
-                    return false;
-                };
-
                 this.updateShapePosition(startPos, width, height, gs);
                 canvas.add(this.shape);
 
@@ -598,24 +571,24 @@
             Grapple.prototype.bindInactiveEvents = function () {
                 const self = this; // keep reference to the grapple object inside events
 
-                const eMouseEnter = function (event) {
+                const eMouseEnter = event => {
                     event.target.getStage().container().style.cursor = options.cursors.inactive;
                 };
 
-                const eMouseLeave = function (event) {
+                const eMouseLeave = event => {
                     let s = event.target.getStage();
                     if (s !== undefined)
                         s.container().style.cursor = options.cursors.default;
                 };
 
-                const eMouseDown = function (event) {
+                const eMouseDown = event => {
                     cy.boxSelectionEnabled(false);
                     cy.panningEnabled(false);
                     cy.autounselectify(true);
                     cy.autoungrabify(true);
                     canvas.getStage().on("contentTouchend contentMouseup", eMouseUp);
                 };
-                const eMouseUp = function (event) {
+                const eMouseUp = event => {
                     // stage scope
                     canvas.getStage().off("contentTouchend contentMouseup", eMouseUp);
                     cy.boxSelectionEnabled(true);
@@ -673,7 +646,7 @@
                     cy.autoungrabify(false);
                 };
 
-                var eMouseDown = function (event) {
+                var eMouseDown = event => {
                     childrenBBox = node.children().boundingBox();
                     // If the node is a compound use setCompoundMinWidth() and setCompoundMinHeight()
                     // instead of setWidth() and setHeight()
@@ -882,9 +855,9 @@
                     self.resizeControls.update(); // redundant update if the position has changed just before
 
                     cy.trigger("noderesize.resizedrag", [location, node]);
-                }, eMouseEnter = function (event) {
+                }, eMouseEnter = event => {
                     event.target.getStage().container().style.cursor = options.cursors[translateLocation[self.location]];
-                }, eMouseLeave = function (event) {
+                }, eMouseLeave = event => {
                     const s = event.target.getStage();
                     if (s !== undefined)
                         s.container().style.cursor = options.cursors.default;
@@ -956,14 +929,12 @@
             };
 
 
-            var getGrappleSize = function (node) {
-                return Math.max(1, cy.zoom()) * options.grappleSize * Math.min(node.width() / 25, node.height() / 25, 1);
-            };
+            var getGrappleSize = node => Math.max(1, cy.zoom()) * options.grappleSize * Math.min(node.width() / 25, node.height() / 25, 1);
 
 
             var getPadding = () => options.padding * Math.max(1, cy.zoom());
 
-            var defaultResizeToContent = function (params) {
+            var defaultResizeToContent = params => {
                 const self = params.self;
                 const node = self.parent;
 
@@ -984,7 +955,7 @@
 
                     let minWidth = 0;
                     let minHeight = Math.max(context.measureText('M').width * 1.1, 30);
-                    labelText.forEach(function (text) {
+                    labelText.forEach(text => {
                         const textWidth = context.measureText(text).width;
                         if (minWidth < textWidth)
                             minWidth = textWidth;
@@ -1036,7 +1007,7 @@
                 for (let i = 0; i < nodes.length; i++) {
                     nodesMap[nodes[i].id()] = true;
                 }
-                const roots = nodes.filter(function (ele, i) {
+                const roots = nodes.filter((ele, i) => {
                     if (typeof ele === "number") {
                         ele = i;
                     }
@@ -1169,7 +1140,7 @@
                 nodesMoving = false;
             }
 
-            const unBindEvents = function () {
+            const unBindEvents = () => {
                 cy.off("unselect", "node", eUnselectNode);
                 cy.off("position", "node", ePositionNode);
                 cy.off("position", "node", eFreeNode);
@@ -1182,11 +1153,11 @@
                 cy.off("afterUndo afterRedo", eUndoRedo);
             };
 
-            const bindEvents = function () {
+            const bindEvents = () => {
                 // declare old and current positions
                 let oldPos = {x: undefined, y: undefined};
                 let currentPos = {x: 0, y: 0};
-                cy.on("unselect", "node", eUnselectNode = function (e) {
+                cy.on("unselect", "node", eUnselectNode = e => {
                     // reinitialize old and current compound positions
                     oldPos = {x: undefined, y: undefined};
                     currentPos = {x: 0, y: 0};
@@ -1202,7 +1173,7 @@
                     }
                 });
 
-                cy.on("select", "node", eSelectNode = function (e) {
+                cy.on("select", "node", eSelectNode = e => {
                     const node = e.target;
 
                     if (controls) {
@@ -1216,7 +1187,7 @@
                     }
                 });
 
-                cy.on("remove", "node", eRemoveNode = function (e) {
+                cy.on("remove", "node", eRemoveNode = e => {
                     const node = e.target;
                     // If a selected node is removed we should regard this event just like an unselect event
                     if (node.selected()) {
@@ -1225,7 +1196,7 @@
                 });
 
                 // is this useful ? adding a node never seems to select it, and it causes a bug when changing parent
-                cy.on("add", "node", eAddNode = function (e) {
+                cy.on("add", "node", eAddNode = e => {
                     const node = e.target;
                     // If a selected node is added we should regard this event just like a select event
                     if (node.selected()) {
@@ -1234,7 +1205,7 @@
                 });
 
                 // listens for position event and refreshGrapples if necessary
-                cy.on("position", "node", ePositionNode = function (e) {
+                cy.on("position", "node", ePositionNode = e => {
                     if (controls) {
                         // It seems that parent.position() doesn't always give consistent result.
                         // But calling it here makes the results consistent, by updating it to the correct value, somehow.
@@ -1253,19 +1224,19 @@
                     }
                 });
 
-                cy.on("zoom", eZoom = function () {
+                cy.on("zoom", eZoom = () => {
                     if (controls) {
                         controls.update();
                     }
                 });
 
-                cy.on("pan", ePan = function () {
+                cy.on("pan", ePan = () => {
                     if (controls) {
                         controls.update();
                     }
                 });
 
-                cy.on("afterUndo afterRedo", eUndoRedo = function () {
+                cy.on("afterUndo afterRedo", eUndoRedo = () => {
                     if (controls) {
                         controls.update();
                         oldPos = {x: undefined, y: undefined};
@@ -1283,7 +1254,7 @@
                 let moveparam;
 
                 // On resize start fill param object to use it on undo/redo
-                cy.on("noderesize.resizestart", function (e, type, node) {
+                cy.on("noderesize.resizestart", (e, type, node) => {
                     param = {
                         node: node,
                         css: {}
@@ -1305,13 +1276,13 @@
                 });
 
                 // On resize end do the action using param object
-                cy.on("noderesize.resizeend", function (e, type, node) {
+                cy.on("noderesize.resizeend", (e, type, node) => {
                     param.firstTime = true;
                     cy.undoRedo().do("resize", param);
                     param = undefined;
                 });
 
-                cy.on("noderesize.movestart", function (e, nodes) {
+                cy.on("noderesize.movestart", (e, nodes) => {
                     if (nodes[0] !== undefined) {
                         moveparam = {
                             firstTime: true,
@@ -1324,7 +1295,7 @@
                     }
                 });
 
-                cy.on("noderesize.moveend", function (e, nodes) {
+                cy.on("noderesize.moveend", (e, nodes) => {
                     if (moveparam !== undefined) {
                         const initialPos = moveparam.firstNodePosition;
 
@@ -1342,7 +1313,7 @@
                     }
                 });
 
-                cy.on("noderesize.resizetocontent", function (e, self) {
+                cy.on("noderesize.resizetocontent", (e, self) => {
                     const params = {
                         self: self,
                         firstTime: true
@@ -1351,7 +1322,7 @@
                     cy.undoRedo().do("resizeToContent", params);
                 });
 
-                const resizeDo = function (arg) {
+                const resizeDo = arg => {
                     // If this is the first time it means that resize is already performed through user interaction.
                     // In this case just removing the first time parameter is enough.
                     if (arg.firstTime) {
@@ -1410,7 +1381,7 @@
                     return result;
                 };
 
-                const moveDo = function (arg) {
+                const moveDo = arg => {
                     if (arg.firstTime) {
                         delete arg.firstTime;
                         return arg;
@@ -1441,7 +1412,7 @@
 
             const api = {}; // The extension api to be exposed
 
-            api.refreshGrapples = function () {
+            api.refreshGrapples = () => {
                 if (controls) {
                     // We need to remove old controls and create a new one rather then just updating controls
                     // We need this because the parent may change status and become resizable or not-resizable
@@ -1450,7 +1421,7 @@
                 }
             };
             // Simply remove grapples even if node is selected
-            api.removeGrapples = function () {
+            api.removeGrapples = () => {
                 if (controls) {
                     controls.remove();
                     controls = null;
@@ -1469,9 +1440,7 @@
     }
 
     if (typeof define !== 'undefined' && define.amd) { // expose as an amd/requirejs module
-        define('cytoscape-node-resize', function () {
-            return register;
-        });
+        define('cytoscape-node-resize', () => register);
     }
 
     if (typeof cytoscape !== 'undefined' && typeof jQuery !== "undefined" && typeof Konva !== "undefined") { // expose to global cytoscape (i.e. window.cytoscape)

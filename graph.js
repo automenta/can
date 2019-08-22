@@ -8,8 +8,8 @@ function graph(container) {
         ,
         //motionBlur: true,
         //textureOnViewport: true,
-
-
+        hideEdgesOnViewport: false,
+        'ghost': false,
         ready: ()=>{
 
             /* https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tree/3051babea3e9f72581c1b0212802426e293317c4 */
@@ -34,6 +34,8 @@ function graph(container) {
             {
                 selector: 'node',
                 style: {
+
+                    'overlay-opacity': 0,
                     'label': "",
                     "source-label": "",
                     "target-label": "",
@@ -71,7 +73,7 @@ function graph(container) {
         }
     });
 
-    var fps = 30;
+    var fps = 60;
     cy.renderer.fullFpsTime = 1000/fps;
 
 

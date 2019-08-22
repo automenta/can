@@ -7,6 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
+        <script src="debounce.js"></script>
 
         <!-- https://github.com/OSMBuildings/OSMBuildings -->
         <!--<link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
@@ -24,7 +25,7 @@
         <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
         <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/konva/4.0.5/konva.min.js"></script>
+        <script src="konva.js"></script>
         <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
         <script src="cytoscape-node-resize.js"></script>
 
@@ -63,33 +64,18 @@
             const term = $('#term');
             const termStyle = term[0].style;
 
-            // Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-            function debounce(func, wait, immediate) {
-                var timeout;
-                return function() {
-                    var context = this, args = arguments;
-                    var later = function() {
-                        timeout = null;
-                        if (!immediate) func.apply(context, args);
-                    };
-                    var callNow = immediate && !timeout;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                    if (callNow) func.apply(context, args);
-                };
-            };
-            var focused = false, hovernig = false;
+
+            var focused = false;
             const _focusUpdate = ()=>{
                 if (focused) {
                     //termStyle.transform = 'scale(1)';
+                    termStyle.zoom = 2;
                     termStyle.opacity = 0.9;
                     termStyle.width = "25%";
                     termStyle.pointerEvents = 'all';
                     termStyle.backgroundColor = 'black';
                 } else {
+                    termStyle.zoom = 0.6;
                     //termStyle.transform = 'scale(0.5)';
                     termStyle.opacity = 0.5;
                     termStyle.width = "80px";
@@ -100,13 +86,14 @@
             const motionFocus = e => {
                 if (e.originalEvent.pageX < 80) { //HACK TODO Use some comparison with actual terminal screen position
                     term.focus();
-                    hovering = true;
-                } else
-                    hovering = false;
+                    //hovering = true;
+                } else {
+                    //hovering = false;
+                }
             };
             $('body').mousemove(motionFocus);
 
-            const focusUpdate = debounce(_focusUpdate, 100);
+            const focusUpdate = debounce(_focusUpdate, 500);
             term.focusin(()=> {
                 focused = true;
                 _focusUpdate();
