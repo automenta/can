@@ -24,8 +24,9 @@
         <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
         <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
 
-        <script src="https://cdn.rawgit.com/konvajs/konva/1.6.3/konva.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/konva/4.0.5/konva.min.js"></script>
+        <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
+        <script src="cytoscape-node-resize.js"></script>
 
         <link rel="stylesheet prefetch" href="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/themes/prism.css"/>
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/prism.min.js"></script>
@@ -54,7 +55,10 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             graph(document.getElementById('graph'));
-            //map();
+            $("canvas")[0].remove(); //HACK to remove useless layers
+            //TODO 2, etc
+
+
 
             const term = $('#term');
             const termStyle = term[0].style;

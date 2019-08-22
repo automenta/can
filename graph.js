@@ -6,16 +6,19 @@ function graph(container) {
         pixelRatio: 1
                     //0.5 //low-res
         ,
-        motionBlur: true,
+        //motionBlur: true,
+        //textureOnViewport: true,
+
 
         ready: ()=>{
 
             /* https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tree/3051babea3e9f72581c1b0212802426e293317c4 */
             cy.nodeResize({
+                undoable: false,
                 grappleColor: 'rgba(250, 250, 250, 0.5)',
-                boundingRectangleLineColor: 'rgba(250, 120, 0, 0.8)',
-                boundingRectangleLineWidth: 1,
-                //TODO boundingRectangleLineStroke
+                boundingRectangleLineColor: 'rgba(250, 120, 0, 0.5)',
+                boundingRectangleLineWidth: 2,
+                boundingRectangleLineDash: null,
                 resizeToContentCueImage:
                     'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
             });
@@ -23,11 +26,22 @@ function graph(container) {
         wheelSensitivity: 0.5,
         style: [
             {
+                selector: 'core',
+                style:{
+                    'active-bg-opacity': 0,
+                }
+            },
+            {
                 selector: 'node',
                 style: {
                     'label': "",
+                    "source-label": "",
+                    "target-label": "",
                     'width': 300,
                     'height': 300,
+                    'text-outline-width': 0,
+                    'text-border-width': 0,
+                    'border-width': 0,
                     'shape': 'hexagon',
                     'background-color': 'gray'
                 }
@@ -57,6 +71,8 @@ function graph(container) {
         }
     });
 
+    var fps = 30;
+    cy.renderer.fullFpsTime = 1000/fps;
 
 
     const zoomDuration = 125; //ms
@@ -82,7 +98,6 @@ function graph(container) {
     };
 
     cy.on('cxttapstart', (e) => {
-        console.log(e.originalEvent);
         e.originalEvent.stopPropagation();
         e.originalEvent.stopImmediatePropagation();
         const target = e.target;
