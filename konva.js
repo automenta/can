@@ -4,6 +4,9 @@
   (global = global || self, global.Konva = factory());
 }(this, function () { 'use strict';
 
+  /** rate-limiting for high-frequency mouse handlers */
+  const MOUSE_MOVE_DELAY_MS = 2;
+
   /*
    * Konva JavaScript Framework v4.0.5
    * http://konvajs.org/
@@ -132,7 +135,7 @@
        * @example
        * Konva.dragDistance = 10;
        */
-      dragDistance: 3,
+      dragDistance: 2,
       /**
        * Use degree values for angle properties. You may set this property to false if you want to use radiant values.
        * @property angleDeg
@@ -152,7 +155,7 @@
        * @example
        * Konva.showWarnings = false;
        */
-      showWarnings: true,
+      showWarnings: false,
       /**
        * Configure what mouse buttons can be used for drag and drop.
        * Default value is [0] - only left mouse button.
@@ -5963,9 +5966,10 @@
           this._fire(MOUSEENTER$1, { evt: evt, target: this, currentTarget: this });
       };
       Stage.prototype._mouseover = function (evt) {
-          this.setPointersPositions(evt);
-          this._fire(CONTENT_MOUSEOVER, { evt: evt });
-          this._fire(MOUSEOVER, { evt: evt, target: this, currentTarget: this });
+              this.setPointersPositions(evt);
+              this._fire(CONTENT_MOUSEOVER, {evt: evt});
+              this._fire(MOUSEOVER, {evt: evt, target: this, currentTarget: this});
+
       };
       Stage.prototype._mouseout = function (evt) {
           this.setPointersPositions(evt);
@@ -5992,7 +5996,7 @@
           this._pointerPositions = [];
           this._fire(CONTENT_MOUSEOUT, { evt: evt });
       };
-      Stage.prototype._mousemove = function (evt) {
+      Stage.prototype._mousemove = debounce(function (evt) {
           // workaround for mobile IE to force touch event when unhandled pointer event elevates into a mouse event
           if (Konva.UA.ieMobile) {
               return this._touchmove(evt);
@@ -6050,7 +6054,7 @@
           if (evt.cancelable) {
               evt.preventDefault();
           }
-      };
+      },MOUSE_MOVE_DELAY_MS);
       Stage.prototype._mousedown = function (evt) {
           // workaround for mobile IE to force touch event when unhandled pointer event elevates into a mouse event
           if (Konva.UA.ieMobile) {

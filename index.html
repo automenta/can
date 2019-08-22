@@ -5,7 +5,7 @@
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <meta name="viewport" lang="*" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
         <link href="index.css" rel="stylesheet" type="text/css">
 
@@ -55,7 +55,6 @@
         <div id="term" style="padding: 0; width:25%; height:100%; position: fixed; opacity:0.5; top:0;left:0;z-index:5000"></div>
         <div id="graph"></div>
         <!--<div id="map"></div>-->
-        <!-- The sandbox template: -->
 
     </body>
     <script>
@@ -84,7 +83,7 @@
                 "Object": {"a": "b", "c": "d"},
                 "String": "Hello World"
             });
-            a.put('d', $("<div><input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea></div>")[0]);
+            a.put('d', $("<div><input type='text' size='10'/><button>HTML</button><textarea cols='25' rows='3'></textarea></div>")[0]);
 
             // nodes: [
             //     {data: {id: 'j', name: '1', tpl: (container, data) => {

@@ -13,6 +13,7 @@ function graph(container) {
         //textureOnViewport: true,
         hideEdgesOnViewport: false,
         'ghost': false,
+        //wheelSensitivity: 0.5,
         ready: ()=>{
 
             /* https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tree/3051babea3e9f72581c1b0212802426e293317c4 */
@@ -43,7 +44,6 @@ function graph(container) {
             }]);
 
         },
-        wheelSensitivity: 0.5,
         style: [
             {
                 selector: 'core',

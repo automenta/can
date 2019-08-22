@@ -6,7 +6,4 @@ function jsonEdit(json, container) {
 
     editor.set(json);
 
-    // get json
-    //var json = editor.get();
-    //console.log(editor);
 }
