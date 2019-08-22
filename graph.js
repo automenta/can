@@ -3,8 +3,19 @@
 function graph(container) {
     const cy = cytoscape({
         container: container,
-        pixelRatio: 0.5,
+        pixelRatio: 1
+                    //0.5 //low-res
+        ,
         motionBlur: true,
+
+        ready: ()=>{
+
+            cy.nodeResize({
+                resizeToContentCueImage:
+                            //'resizeCue.svg'
+                            'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
+            });
+        },
         wheelSensitivity: 0.5,
         style: [
             {
@@ -62,11 +73,14 @@ function graph(container) {
             /*step: function() {
              }*/
         });
+
     };
 
     cy.on('cxttapstart', (e) => {
+        console.log(e.originalEvent);
+        e.originalEvent.stopPropagation();
+        e.originalEvent.stopImmediatePropagation();
         const target = e.target;
-        console.log(target);
         if (!target) cy.zoomTo(); else cy.zoomTo(target);
     });
 
@@ -102,6 +116,9 @@ function graph(container) {
                 container.innerHTML = "<input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea>";
             }
         }]);
+
+
+
     return cy;
 }
 

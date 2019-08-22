@@ -65,6 +65,7 @@ interface CytoscapeNodeHtmlParams {
         private _node: HTMLElement;
         private _align: [number, number, number, number];
 
+
         constructor({
                         node,
                         position = null,
@@ -105,8 +106,8 @@ interface CytoscapeNodeHtmlParams {
             this._align = [
                 _align[halign],
                 _align[valign],
-                100 * (_align[halignBox] - 0.5),
-                100 * (_align[valignBox] - 0.5)
+                100 * (_align[halignBox] - 0.5), //pct
+                100 * (_align[valignBox] - 0.5)  //pct
             ];
 
             this.tpl = tpl;
@@ -147,13 +148,16 @@ interface CytoscapeNodeHtmlParams {
                 prev[0] = x;
                 prev[1] = y;
 
-                let valRel = `translate(${this._align[2]}%,${this._align[3]}%) `;
-                let valAbs = `translate(${x.toFixed(0)}px,${y.toFixed(0)}px) `;
-                let val = valRel + valAbs;
-                let stl = <any>this._node.style;
+                //TODO cache better
+                const valRel = `translate(${this._align[2]}%,${this._align[3]}%) `;
+                const valAbs = `translate(${x.toFixed(0)}px,${y.toFixed(0)}px) `; //0.5 if higher res?
+                const val = valRel + valAbs;
+
+                const stl = <any>this._node.style;
                 stl.webkitTransform = val;
                 stl.msTransform = val;
                 stl.transform = val;
+
             }
         }
     }
@@ -207,16 +211,12 @@ interface CytoscapeNodeHtmlParams {
         }
 
         updatePanZoom({pan, zoom}: { pan: { x: number, y: number }, zoom: number }) {
-            const val = `translate(${pan.x}px,${pan.y}px) scale(${zoom})`;
-            const origin = "top left";
+            const val = `translate(${pan.x.toFixed(0)}px,${pan.y.toFixed(0)}px) scale(${zoom})`;
 
             const stl = <any>this._node.style;
             stl.webkitTransform = val;
             stl.msTransform = val;
             stl.transform = val;
-            stl.webkitTransformOrigin = origin;
-            stl.msTransformOrigin = origin;
-            stl.transformOrigin = origin;
         }
     }
 
@@ -254,6 +254,12 @@ interface CytoscapeNodeHtmlParams {
             stl.padding = '0px';
             stl.border = '0px';
             stl.outline = '0px';
+
+            const origin = "top left";
+            stl.transformOrigin = origin;
+            /*stl.webkitTransformOrigin = origin;
+            stl.msTransformOrigin = origin;
+            stl.transformOrigin = origin;*/
 
 
             let _cyContainer = _cy.container();
