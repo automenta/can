@@ -21,14 +21,22 @@
         <script src="https://unpkg.com/cytoscape-undo-redo@latest/cytoscape-undo-redo.js"></script>
         <script src="cytoscape-node-html-label.js"></script>
 
+        <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
+
         <script src="https://cdn.rawgit.com/konvajs/konva/1.6.3/konva.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>
 
-        <script src="graph.js"></script>
+        <link rel="stylesheet prefetch" href="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/themes/prism.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/prism.min.js"></script>
+
+
 
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.css" rel="stylesheet" type="text/css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.js"></script>
+
+        <script src="graph.js"></script>
         <script src="jsonedit.js"></script>
 
         <link href="index.css" rel="stylesheet" type="text/css">
@@ -36,15 +44,105 @@
     </head>
 
     <body>
+        <div id="term" style="padding: 0; width:25%; height:100%; position: fixed; opacity:0.5; top:0;left:0;z-index:5000"></div>
         <div id="graph"></div>
         <!--<div id="map"></div>-->
-
+        <!-- The sandbox template: -->
 
     </body>
     <script>
+
         window.addEventListener('DOMContentLoaded', () => {
             graph(document.getElementById('graph'));
             //map();
+
+            const term = $('#term');
+            const termStyle = term[0].style;
+
+            // Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+            function debounce(func, wait, immediate) {
+                var timeout;
+                return function() {
+                    var context = this, args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            };
+            var focused = false, hovernig = false;
+            const _focusUpdate = ()=>{
+                if (focused) {
+                    //termStyle.transform = 'scale(1)';
+                    termStyle.opacity = 0.9;
+                    termStyle.width = "25%";
+                    termStyle.pointerEvents = 'all';
+                    termStyle.backgroundColor = 'black';
+                } else {
+                    //termStyle.transform = 'scale(0.5)';
+                    termStyle.opacity = 0.5;
+                    termStyle.width = "80px";
+                    termStyle.pointerEvents = 'none';
+                    termStyle.backgroundColor = 'transparent';
+                }
+            };
+            const motionFocus = e => {
+                if (e.originalEvent.pageX < 80) { //HACK TODO Use some comparison with actual terminal screen position
+                    term.focus();
+                    hovering = true;
+                } else
+                    hovering = false;
+            };
+            $('body').mousemove(motionFocus);
+
+            const focusUpdate = debounce(_focusUpdate, 100);
+            term.focusin(()=> {
+                focused = true;
+                _focusUpdate();
+            });
+            term.focusout(()=> {
+                focused = false;
+                focusUpdate();
+            });
+
+
+            jQuery(function($, undefined) {
+                /*$.terminal.defaults.formatters.push(
+                    $.terminal.prism.bind(null, 'javascript')
+                );*/
+                term.terminal(function(command) {
+                    if (command !== '') {
+                        try {
+                            var result = window.eval(command);
+                            if (result !== undefined) {
+                                this.echo(new String(result));
+                            }
+                        } catch(e) {
+                            this.error(new String(e));
+                        }
+                    } else {
+                        this.echo('');
+                    }
+                }, {
+                    greetings: null,
+                    name: 'js_demo',
+                    height: '100%',
+                    width: '25%',
+                    prompt: '▒ ',
+                    invokeMethods: true
+                });
+            });
+
         });
+
+
+
     </script>
 </html>

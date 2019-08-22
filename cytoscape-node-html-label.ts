@@ -265,7 +265,7 @@ interface CytoscapeNodeHtmlParams {
             let _cyContainer = _cy.container();
             let _cyCanvas = _cyContainer.querySelector("canvas");
 
-            _cyCanvas.parentNode.parentNode.parentNode.prepend(containerNode);
+            _cyCanvas.parentNode.parentNode.parentNode.append(containerNode);
 
             return new LabelContainer(containerNode);
         }

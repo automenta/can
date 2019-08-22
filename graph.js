@@ -10,10 +10,14 @@ function graph(container) {
 
         ready: ()=>{
 
+            /* https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tree/3051babea3e9f72581c1b0212802426e293317c4 */
             cy.nodeResize({
+                grappleColor: 'rgba(250, 250, 250, 0.5)',
+                boundingRectangleLineColor: 'rgba(250, 120, 0, 0.8)',
+                boundingRectangleLineWidth: 1,
+                //TODO boundingRectangleLineStroke
                 resizeToContentCueImage:
-                            //'resizeCue.svg'
-                            'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
+                    'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
             });
         },
         wheelSensitivity: 0.5,
@@ -21,10 +25,11 @@ function graph(container) {
             {
                 selector: 'node',
                 style: {
-                    'label': '',
+                    'label': "",
                     'width': 300,
                     'height': 300,
-                    'shape': 'hexagon'
+                    'shape': 'hexagon',
+                    'background-color': 'gray'
                 }
             }
         ],
