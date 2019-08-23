@@ -2,7 +2,7 @@
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-function debounce(func, wait, immediate, _context = null) {
+function debounce(func, immediate, wait,_context = null) {
     var timeout;
     return function() {
         const context = _context ? _context : this, args = arguments;

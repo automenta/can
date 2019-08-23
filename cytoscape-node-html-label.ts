@@ -130,11 +130,6 @@ interface CytoscapeNodeHtmlParams {
 
         private initStyles(cssClass: string) {
             let stl = this._node.style;
-
-
-            stl['pointer-events'] = 'all';
-            stl.position = 'absolute';
-
             if (cssClass && cssClass.length)
                 this._node.classList.add(cssClass);
         }
@@ -192,6 +187,7 @@ interface CytoscapeNodeHtmlParams {
 
         constructor(node: HTMLElement) {
             this._node = node;
+            node.classList.add('htmlOverlays');
             this._elements = <HashTableElements>{};
         }
 
@@ -229,12 +225,14 @@ interface CytoscapeNodeHtmlParams {
         }
 
         updatePanZoom({pan, zoom}: { pan: { x: number, y: number }, zoom: number }) {
+            setTimeout(()=>{
             const val = `translate(${pan.x.toFixed(0)}px,${pan.y.toFixed(0)}px) scale(${zoom})`;
 
             const stl = <any>this._node.style;
             /*stl.webkitTransform = val;
             stl.msTransform = val;*/
             stl.transform = val;
+            });
         }
     }
 
@@ -263,18 +261,7 @@ interface CytoscapeNodeHtmlParams {
                 _cyCanvas.parentNode.removeChild(cur);
             }*/
 
-            let stl = containerNode.style;
-            stl.position = 'absolute';
-            stl['z-index'] = 2000;
-            //stl.width = '500px';
-            stl['pointer-events'] = 'none';
-            stl.margin = '0px';
-            stl.padding = '0px';
-            stl.border = '0px';
-            stl.outline = '0px';
 
-            const origin = "top left";
-            stl.transformOrigin = origin;
             /*stl.webkitTransformOrigin = origin;
             stl.msTransformOrigin = origin;
             stl.transformOrigin = origin;*/

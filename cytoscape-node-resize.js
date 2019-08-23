@@ -383,17 +383,19 @@
 
             // Resize the canvas
             const sizeCanvas = debounce(() => {
-                $canvasElement
-                    .attr('height', $container.height())
-                    .attr('width', $container.width())
-                    .css({
-                        'position': 'absolute',
-                        'top': 0,
-                        'left': 0,
-                        'z-index': '999'
-                    });
 
                 setTimeout(() => {
+                    const stage = canvas.getStage();
+                    $canvasElement
+                        .attr('height', $container.height())
+                        .attr('width', $container.width())
+                        .css({
+                            'position': 'absolute',
+                            'top': 0,
+                            'left': 0,
+                            'z-index': '999'
+                        });
+
                     const canvasBb = $canvasElement.offset();
                     const containerBb = $container.offset();
 
@@ -403,11 +405,11 @@
                             'left': -(canvasBb.left - containerBb.left)
                         })
                     ;
-                    canvas.getStage().setWidth($container.width());
-                    canvas.getStage().setHeight($container.height());
+                    stage.setWidth($container.width());
+                    stage.setHeight($container.height());
                 }, 0);
 
-            }, 250);
+            });
 
             sizeCanvas();
 
@@ -425,8 +427,16 @@
             const ResizeControls = function (node) {
                 this.parent = node;
                 this.boundingRectangle = new BoundingRectangle(node);
-                const grappleLocations = ["topleft", "topcenter", "topright", "centerright", "bottomright",
-                    "bottomcenter", "bottomleft", "centerleft"];
+                const grappleLocations = [
+                    "topleft",
+                    //"topcenter",
+                    "topright",
+                    //"centerright",
+                    "bottomright",
+                    //"bottomcenter",
+                    "bottomleft",
+                    //"centerleft"
+                ];
                 this.grapples = [];
                 for (let i = 0; i < grappleLocations.length; i++) {
                     const location = grappleLocations[i];
@@ -441,7 +451,72 @@
                 //if (options.resizeToContentCueEnabled(node) && !options.isNoResizeMode(node))
                 //this.resizeCue = new ResizeCue(node, this);
 
+                cy.on("remove", "node", eRemoveNode = e => {
+                    const node = e.target;
+                    // If a selected node is removed we should regard this event just like an unselect event
+                    if (node.selected()) {
+                        eUnselectNode(e);
+                    }
+                });
+
+                // is this useful ? adding a node never seems to select it, and it causes a bug when changing parent
+                cy.on("add", "node", eAddNode = e => {
+                    const node = e.target;
+                    // If a selected node is added we should regard this event just like a select event
+                    if (node.selected()) {
+                        eSelectNode(e);
+                    }
+                });
+
+                // listens for position event and refreshGrapples if necessary
+                cy.on("position", "node", ePositionNode = e => {
+                    if (controls) {
+                        // It seems that parent.position() doesn't always give consistent result.
+                        // But calling it here makes the results consistent, by updating it to the correct value, somehow.
+                        // Maybe there is some cache on cytoscape side preventing a position update.
+                        //var trash_var = controls.parent.position(); // trash_var isn't used, this line apparently makes position() correct
+                        if (e.target.id() === controls.parent.id()) {
+                            controls.update();
+                        }
+                        // if the position of compund changes by repositioning its children's
+                        // Note: position event for compound is not triggered in this case
+                        else if (currentPos.x !== oldPos.x || currentPos.y !== oldPos.y) {
+                            const ppos = controls.parent.position();
+                            oldPos.x = currentPos.x = ppos.x; oldPos.y = currentPos.y = ppos.y;
+                            controls.update();
+                        }
+                    }
+                });
+
+                cy.on("zoom", eZoom = () => {
+                    if (controls) {
+                        controls.update();
+                    }
+                });
+
+                cy.on("pan", ePan = () => {
+                    if (controls) {
+                        controls.update();
+                    }
+                });
+
+                cy.on("afterUndo afterRedo", eUndoRedo = () => {
+                    if (controls) {
+                        controls.update();
+                        oldPos = {x: undefined, y: undefined};
+                    }
+                });
+
                 canvas.draw();
+            };
+
+            ResizeControls.prototype.delete = function() {
+                cy.off("position", "node", ePositionNode);
+                cy.off("position", "node", eFreeNode);
+                cy.off("remove", "node", eRemoveNode);
+                cy.off("add", "node", eAddNode);
+                cy.off("zoom", eZoom);
+                cy.off("pan", ePan);
             };
 
             ResizeControls.prototype.update = function () {
@@ -854,7 +929,7 @@
                     startPos.y = y;
                     self.resizeControls.update(); // redundant update if the position has changed just before
 
-                    cy.trigger("noderesize.resizedrag", [location, node]);
+                    //cy.trigger("noderesize.resizedrag", [location, node]);
                 }, eMouseEnter = event => {
                     event.target.getStage().container().style.cursor = options.cursors[translateLocation[self.location]];
                 }, eMouseLeave = event => {
@@ -1141,28 +1216,26 @@
             }
 
             const unBindEvents = () => {
-                cy.off("unselect", "node", eUnselectNode);
-                cy.off("position", "node", ePositionNode);
-                cy.off("position", "node", eFreeNode);
-                cy.off("zoom", eZoom);
-                cy.off("pan", ePan);
+
                 //cy.off("style", "node", redraw);
+                cy.off("unselect", "node", eUnselectNode);
                 cy.off("select", "node", eSelectNode);
-                cy.off("remove", "node", eRemoveNode);
-                cy.off("add", "node", eAddNode);
                 cy.off("afterUndo afterRedo", eUndoRedo);
             };
 
+            const currentPos = {x: 0, y: 0};
+            const oldPos = {x: undefined, y: undefined};
+
             const bindEvents = () => {
                 // declare old and current positions
-                let oldPos = {x: undefined, y: undefined};
-                let currentPos = {x: 0, y: 0};
+
                 cy.on("unselect", "node", eUnselectNode = e => {
                     // reinitialize old and current compound positions
-                    oldPos = {x: undefined, y: undefined};
-                    currentPos = {x: 0, y: 0};
+                    oldPos.x = oldPos.y = undefined;
+                    currentPos.x = currentPos.y = 0;
 
                     if (controls) {
+                        controls.delete();
                         controls.remove();
                         controls = null;
                     }
@@ -1174,9 +1247,10 @@
                 });
 
                 cy.on("select", "node", eSelectNode = e => {
-                    const node = e.target;
+                    //const node = e.target;
 
                     if (controls) {
+                        controls.delete();
                         controls.remove();
                         controls = null;
                     }
@@ -1187,61 +1261,7 @@
                     }
                 });
 
-                cy.on("remove", "node", eRemoveNode = e => {
-                    const node = e.target;
-                    // If a selected node is removed we should regard this event just like an unselect event
-                    if (node.selected()) {
-                        eUnselectNode(e);
-                    }
-                });
 
-                // is this useful ? adding a node never seems to select it, and it causes a bug when changing parent
-                cy.on("add", "node", eAddNode = e => {
-                    const node = e.target;
-                    // If a selected node is added we should regard this event just like a select event
-                    if (node.selected()) {
-                        eSelectNode(e);
-                    }
-                });
-
-                // listens for position event and refreshGrapples if necessary
-                cy.on("position", "node", ePositionNode = e => {
-                    if (controls) {
-                        // It seems that parent.position() doesn't always give consistent result.
-                        // But calling it here makes the results consistent, by updating it to the correct value, somehow.
-                        // Maybe there is some cache on cytoscape side preventing a position update.
-                        //var trash_var = controls.parent.position(); // trash_var isn't used, this line apparently makes position() correct
-                        if (e.target.id() === controls.parent.id()) {
-                            controls.update();
-                        }
-                        // if the position of compund changes by repositioning its children's
-                        // Note: position event for compound is not triggered in this case
-                        else if (currentPos.x !== oldPos.x || currentPos.y !== oldPos.y) {
-                            currentPos = controls.parent.position();
-                            controls.update();
-                            oldPos = {x: currentPos.x, y: currentPos.y};
-                        }
-                    }
-                });
-
-                cy.on("zoom", eZoom = () => {
-                    if (controls) {
-                        controls.update();
-                    }
-                });
-
-                cy.on("pan", ePan = () => {
-                    if (controls) {
-                        controls.update();
-                    }
-                });
-
-                cy.on("afterUndo afterRedo", eUndoRedo = () => {
-                    if (controls) {
-                        controls.update();
-                        oldPos = {x: undefined, y: undefined};
-                    }
-                });
 
                 document.addEventListener("keydown", keyDown, true);
                 document.addEventListener("keyup", keyUp, true);
@@ -1412,14 +1432,14 @@
 
             const api = {}; // The extension api to be exposed
 
-            api.refreshGrapples = () => {
+            /*api.refreshGrapples = () => {
                 if (controls) {
                     // We need to remove old controls and create a new one rather then just updating controls
                     // We need this because the parent may change status and become resizable or not-resizable
                     controls.remove();
                     controls = new ResizeControls(controls.parent);
                 }
-            };
+            };*/
             // Simply remove grapples even if node is selected
             api.removeGrapples = () => {
                 if (controls) {

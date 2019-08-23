@@ -34,6 +34,7 @@ function graph(container) {
 
             c.nodeHtmlLabel([{
                 query: ".html",
+                cssClass: 'htmlOverlay'
                 /*tpl: (container, data) => {
                     if (data.tpl) {
                         data.tpl(container, data);
