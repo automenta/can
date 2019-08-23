@@ -1,6 +1,16 @@
 
 function attention(g, nodizer) {
-    const layout = debounce(()=> g.layout({name: 'cose'}).run(), 100);
+    const layout = debounce(()=> {
+        g.layout( {
+            name:
+                //'cose'
+                'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
+                    ,
+                    'flow': { axis: 'y', minSeparation: 30 }
+            //'infinite': true
+        }).run();
+
+    }, 50);
 
     this.map = new LRUMap({
         maxSize: 512,
@@ -13,7 +23,7 @@ function attention(g, nodizer) {
                 classes: 'html',
                 data: { id:key, value:value, tpl: nodizer },
             };
-            
+
             var eles = g.add([a]);
 
             layout();

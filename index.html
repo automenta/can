@@ -25,6 +25,9 @@
         <script src="https://unpkg.com/cytoscape-undo-redo@latest/cytoscape-undo-redo.js"></script>
         <script src="cytoscape-node-html-label.js"></script>
 
+        <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+        <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>
+
         <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
         <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
 
@@ -68,9 +71,9 @@
 
             const a = attention(g, (container, x)=>{
 
-                x = x.value;
+                if (x.value)
+                    x = x.value; //dereference
 
-                console.log(container, x);
 
                 if (typeof x === "string") {
                     container.innerHTML = x.toString();
@@ -96,7 +99,6 @@
                 "Object": {"a": "b", "c": "d"},
                 "String": "Hello World"
             });
-            a.put('d', $("<div><input type='text' size='10'/><button>HTML</button><textarea cols='25' rows='3'></textarea></div>")[0]);
 
 
             var ws = new ReconnectingWebSocket('ws://xyz:60606');
@@ -109,11 +111,21 @@
                 a.put(channel + '_' + (mid++), y);
             };
             ws.onopen = ()=>{
-                console.log('open', ws);
-                setTimeout(()=>
-                ws.send('x.getClass()'), 2000);
+                setTimeout(()=> ws.send('x.getClass()'), 2000);
+                setTimeout(()=> ws.send('1+1'), 2500);
             };
 
+            const inputBox = $("<div contenteditable='true' style='background-color:black; color:orange; width:100%; height:100%'/>");//<button>?</button><textarea cols='25' rows='3'></textarea>").wrap('div')
+            inputBox.keypress((k)=>{
+                if (k.keyCode === 13 /* enter */) {
+                    const i = inputBox.text();
+                    console.log(i);
+                    inputBox.text(''); //clear
+                    ws.send(i);
+                    k.stopPropagation();
+                }
+            });
+            a.put('d', $('<div>').append($('<code>' + ws.url + '</code>'), inputBox)[0]);
 
 
             // nodes: [

@@ -145,6 +145,7 @@ interface CytoscapeNodeHtmlParams {
             const x = position.x;// + this._align[0] * position.w;
             const y = position.y;// + this._align[1] * position.h;
 
+
             const thresh = 0.5;
             if (Math.abs(x - prev[0]) > thresh || Math.abs(y - prev[1]) > thresh) {
                 prev[0] = x;
@@ -170,9 +171,10 @@ interface CytoscapeNodeHtmlParams {
                 stl.transform = val;
 
                 if (this.contentExpand) {
-                    const innerScale = 0.75;
-                    stl.width = (innerScale * position.w).toFixed(0);
-                    stl.height = (innerScale * position.h).toFixed(0);
+                    stl.width = position.w.toFixed(0);
+                    stl.height = position.h.toFixed(0);
+                } else {
+                    //stl.scale =
                 }
 
             }
