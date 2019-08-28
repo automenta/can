@@ -1,136 +1,174 @@
 <html>
-    <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-        <meta name="viewport" lang="*" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="viewport" lang="*" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
-        <link href="index.css" rel="stylesheet" type="text/css">
+    <link href="index.css" rel="stylesheet" type="text/css">
 
-        <script src="util.js"></script>
-        <script src="lru.js"></script>
+    <script src="util.js"></script>
+    <script src="lru.js"></script>
 
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-
-
-        <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
-
-        <link rel="stylesheet prefetch" href="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/themes/prism.css"/>
-        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/prism.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
 
-        <script src="https://cdn.jsdelivr.net/gh/joewalnes/reconnecting-websocket@latest/reconnecting-websocket.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css"
+          rel="stylesheet" type="text/css">
 
-        <script src="konva.js"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.9.1/cytoscape.min.js"></script>
-        <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
-        <script src="https://unpkg.com/cytoscape-cxtmenu@latest/cytoscape-cxtmenu.js"></script>
-        <script src="https://unpkg.com/cytoscape-undo-redo@latest/cytoscape-undo-redo.js"></script>
-        <script src="cytoscape-node-html-label.js"></script>
-        <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
-        <script src="cytoscape-node-resize.js"></script>
+    <link rel="stylesheet prefetch" href="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/themes/prism.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/prism.min.js"></script>
 
 
+    <script src="https://cdn.jsdelivr.net/gh/joewalnes/reconnecting-websocket@latest/reconnecting-websocket.min.js"></script>
 
-        <!--<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
-        <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>-->
+    <script src="konva.js"></script>
 
-
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.css" rel="stylesheet" type="text/css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.js"></script>
-
-        <script src="jsonedit.js"></script>
-
-        <script src="graph.js"></script>
-        <script src="terminal.js"></script>
-        <script src="attn.js"></script>
-        <script src="websocket.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.9.1/cytoscape.min.js"></script>
+    <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/cytoscape-cxtmenu@latest/cytoscape-cxtmenu.js"></script>
+    <script src="https://unpkg.com/cytoscape-undo-redo@latest/cytoscape-undo-redo.js"></script>
+    <script src="cytoscape-node-html-label.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
+    <script src="cytoscape-node-resize.js"></script>
 
 
-        <!-- https://github.com/OSMBuildings/OSMBuildings -->
-        <!--<link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
-        <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
-        <script src="map.js"></script>
-        -->
-    </head>
-
-    <body>
-        <div id="g" class="graph"></div>
-        <!--<div id="map"></div>-->
-    </body>
-    <script>
-
-        $(document).ready(() => {
-
-            const g = graph(document.getElementById('g'));
-
-            //const t = terminal($('body'));
-
-            const a = attention(g);
-
-            a.put('label', 'Primitive Label');
-
-            a.put('a', $('<button>x</button>')[0]);
-                //[1,2,3]);
-            a.put('b', {x:"y", z: [0,1]});
-            a.put('c', {
-                "Array": [1, 2, 3],
-                "Boolean": true,
-                "Null": null,
-                "Number": 123,
-                "Object": {"a": "b", "c": "d"},
-                "String": "Hello World"
-            });
+    <!--<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>-->
 
 
-            a.put('d', websocketTest('ws://xyz:60606'));
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.css" rel="stylesheet"
+          type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.js"></script>
+
+    <script src="jsonedit.js"></script>
+
+    <script src="graph.js"></script>
+    <script src="terminal.js"></script>
+    <script src="attn.js"></script>
+    <script src="websocket.js"></script>
 
 
-            // nodes: [
-            //     {data: {id: 'j', name: '1', tpl: (container, data) => {
-            //
-            //                 jsonEdit({
-            //                     "Array": [1, 2, 3],
-            //                     "Boolean": true,
-            //                     "Null": null,
-            //                     "Number": 123,
-            //                     "Object": {"a": "b", "c": "d"},
-            //                     "String": "Hello World"
-            //                 }, container);
-            //
-            //                 //container.innerHTML = '<iframe src="http://openjdk.java.net"></iframe>';
-            //             }, classes: 'html' } },
-            //     {data: {id: 'e', name: '2', tpl: (container,data)=>{
-            //                 container.innerHTML = '<button>x</button>';
-            //             } }, classes: 'html'},
-            //     {data: {id: 'ee', tpl: (container,data)=>{
-            //                 container.innerHTML =
-            //                     "<input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea>";
-            //             } }, classes: 'html'},
-            //     {data: {id: 'k', name: '3'}, classes: 'l3'},
-            //     {data: {id: 'g', name: '4'}, classes: 'l4'}
-            // ],
-            //     edges: [
-            //     {data: {source: 'j', target: 'e'}},
-            //     {data: {source: 'j', target: 'k'}},
-            //     {data: {source: 'j', target: 'g'}},
-            //     {data: {source: 'e', target: 'j'}},
-            //     {data: {source: 'e', target: 'k'}},
-            //     {data: {source: 'k', target: 'j'}},
-            //     {data: {source: 'k', target: 'e'}},
-            //     {data: {source: 'k', target: 'g'}},
-            //     {data: {source: 'g', target: 'j'}}
-            // ]
+    <!-- https://github.com/OSMBuildings/OSMBuildings -->
+    <!--<link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
+    <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
+    <script src="map.js"></script>
+    -->
+</head>
+
+<body>
+<div id="g" class="graph"></div>
+<!--<div id="map"></div>-->
+</body>
+<script>
+
+    $(document).ready(() => {
+
+        const g = graph(document.getElementById('g'));
+
+        //const t = terminal($('body'));
+
+        const a = attention(g);
+
+        a.put('test', $('<div/>').append(
+            /*
+            TODO
+            1. label node
+                    a. rectangle shape
+                    b. hexagon shape
+                    c. no shape
+            2. html node
+            3. 2 nodes, eventually connected by edge
+            4. 2 streams of 1+n nodes, connected by 2 sequential edges
+
+            5. base metanode frame (X close button)
+
+            6. node with internal dialog button
+                a. hide ("OK" -> then disappears)
+                b. ...
+
+            7. sizing
+            8. autofocus
+
+            9. json -> json form generation
+
+            10. multiview nodes
+            11. (stack) replacement node
+
+            12. websocket connection
+            13. http/get json connection
+            14. webrtc connection
+            */
+
+            $('<h1/>').text('Tests'),
+            $('<button/>').text('Primitive Label').click(() => {
+                a.put('Primitive Label');
+            }),
+            $('<button/>').text('Pre-Fab JQuery DOM').click(() => {
+                a.put('prefabDom', $('<button>x</button>'));
+            }),
+            $('<button/>').text('JSONEdit Object').click(() => {
+                a.put('jsonEditObj', {x: "y", z: [0, 1]});
+            }),
+            $('<button/>').text('JSONEdit Object 2').click(() => {
+                a.put('jsonEditObj2', {
+                    "Array": [1, 2, 3],
+                    "Boolean": true,
+                    "Null": null,
+                    "Number": 123,
+                    "Object": {"a": "b", "c": "d"},
+                    "String": "Hello World"
+                });
+            }),
+            $('<button/>').text('JSONEdit Array').click(() => {
+                a.put('jsonEditArray', [0, 1, 2]);
+            }),
+
+            //TODO add textfield to specify url before creation
+            $('<button/>').text('Websocket Connection').click(() => {
+                a.put('websocket1', websocketTest('ws://xyz:60606'));
+            })
+        ));
+
+        // nodes: [
+        //     {data: {id: 'j', name: '1', tpl: (container, data) => {
+        //
+        //                 jsonEdit({
+        //                     "Array": [1, 2, 3],
+        //                     "Boolean": true,
+        //                     "Null": null,
+        //                     "Number": 123,
+        //                     "Object": {"a": "b", "c": "d"},
+        //                     "String": "Hello World"
+        //                 }, container);
+        //
+        //                 //container.innerHTML = '<iframe src="http://openjdk.java.net"></iframe>';
+        //             }, classes: 'html' } },
+        //     {data: {id: 'e', name: '2', tpl: (container,data)=>{
+        //                 container.innerHTML = '<button>x</button>';
+        //             } }, classes: 'html'},
+        //     {data: {id: 'ee', tpl: (container,data)=>{
+        //                 container.innerHTML =
+        //                     "<input type='text' size='10'></input><button>HTML</button><textarea cols='25' rows='3'></textarea>";
+        //             } }, classes: 'html'},
+        //     {data: {id: 'k', name: '3'}, classes: 'l3'},
+        //     {data: {id: 'g', name: '4'}, classes: 'l4'}
+        // ],
+        //     edges: [
+        //     {data: {source: 'j', target: 'e'}},
+        //     {data: {source: 'j', target: 'k'}},
+        //     {data: {source: 'j', target: 'g'}},
+        //     {data: {source: 'e', target: 'j'}},
+        //     {data: {source: 'e', target: 'k'}},
+        //     {data: {source: 'k', target: 'j'}},
+        //     {data: {source: 'k', target: 'e'}},
+        //     {data: {source: 'k', target: 'g'}},
+        //     {data: {source: 'g', target: 'j'}}
+        // ]
 
 
+    });
 
 
-
-
-        });
-
-
-
-    </script>
+</script>
 </html>

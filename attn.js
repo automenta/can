@@ -2,11 +2,13 @@
 
 function attention(g) {
 
-    const nodizer = (container, x)=>{
+    const nodizer = /* deprecated */ (container, x)=>{
 
         if (x.value)
             x = x.value; //dereference
 
+        if (typeof(x)==="object" && x.jquery && x.length===1)
+            x = x[0]; //unwrap 1-element jquery selector
 
         if (typeof x === "string") {
             container.innerHTML = x.toString();
@@ -27,6 +29,7 @@ function attention(g) {
                 'cose'
                 //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
                     ,
+            randomize: false,
                     'flow': { axis: 'y', minSeparation: 30 }
             //'infinite': true
         }).run();
@@ -52,7 +55,10 @@ function attention(g) {
                 a = {
                     group: 'nodes',
                     classes: 'html',
-                    data: { tpl: nodizer }
+                    data: {
+                        shape: 'hexagon',
+                        //shape: 'rectangle',
+                        tpl: nodizer }
                 };
             }
 

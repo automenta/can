@@ -2,6 +2,16 @@
 
 function graph(container) {
 
+
+    const styleFrom = (style)=>{
+        const s = {
+            "selector": "node[" + style + "]",
+            "style": { }
+        };
+        s.style[style] = 'data(' + style + ')';
+        return s;
+    };
+
     var fps = 30;
 
     const cy = cytoscape({
@@ -66,21 +76,15 @@ function graph(container) {
                     'text-outline-width': 0,
                     'text-border-width': 0,
                     'border-width': 0,
-                    'shape': 'hexagon',
                     'background-color': 'gray',
                     "text-valign": "center",
                     "text-halign": "center"
                 }
-            }
-            ,{
-                "selector": "node[label]",
-                "style": {
-                    "label": "data(label)"
-                }
-            }
+            },
+            styleFrom('label'),
+            styleFrom('shape'),
+            styleFrom('background-color')
         ]
-        /*elements: {
-        }*/
     });
 
 
