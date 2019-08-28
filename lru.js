@@ -178,13 +178,11 @@ window.LRUMap = (function () {
         entries = this._map.entries();
         cur = entries.next().value;
         _results = [];
-        var deleter;
         while (cur != null) {
             diff = (+(new Date) - cur[1].timestamp) / 1000;
             if (diff > maxAge) {
 
-                if (!deleter) deleter = this._map["delete"];
-                deleter(cur[0]);
+                this.delete(cur[0]);
 
                 this._total -= cur[1].size;
                 this._onStale(cur[0], cur[1].value);
@@ -214,14 +212,13 @@ window.LRUMap = (function () {
             throw new Error("cannot store an object of that size (maxSize = " + this._maxSize + "; value size = " + size + ")");
 
         entries = this._map.entries();
-        var deleter;
+
         while (priorTotal + size > this._maxSize) {
             oldest = entries.next().value;
             if (oldest == null)
                 break;
 
-            if (!deleter) deleter = this._map["delete"];
-            deleter(oldest[0]);
+            this.delete(oldest[0]);
             priorTotal -= oldest[1].size;
             this._onEvict(oldest[0], oldest[1].value);
         }
@@ -290,7 +287,7 @@ window.LRUMap = (function () {
                 opts.onCacheMiss(key);
             //});
             if (opts.invokeNewValueFunction && typeof newValue === 'function') {
-                newValue = newValue();
+                newValue = newValue(key);
             }
             inflight = Promise.resolve(newValue).timeout(opts.timeout).tap((function (_this) {
                 return function (value) {
@@ -309,7 +306,7 @@ window.LRUMap = (function () {
         }
     };
 
-    LRUMap.prototype["delete"] = function (key) {
+    LRUMap.prototype.delete = LRUMap.prototype["delete"] = function (key) {
         if (this._map.has(key)) {
             this._total -= this.sizeOf(key);
             this._map["delete"](key);

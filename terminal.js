@@ -31,7 +31,7 @@ function terminal() {
     };
     $('body').mousemove(motionFocus);
 
-    const focusUpdate = debounce(_focusUpdate, 500);
+    const focusUpdate = throttle(_focusUpdate, 500);
     term.focusin(() => {
         focused = true;
         _focusUpdate();

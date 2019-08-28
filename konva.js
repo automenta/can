@@ -5996,7 +5996,7 @@
           this._pointerPositions = [];
           this._fire(CONTENT_MOUSEOUT, { evt: evt });
       };
-      Stage.prototype._mousemove = debounce(function (evt) {
+      Stage.prototype._mousemove = throttle(function (evt) {
           // workaround for mobile IE to force touch event when unhandled pointer event elevates into a mouse event
           if (Konva.UA.ieMobile) {
               return this._touchmove(evt);

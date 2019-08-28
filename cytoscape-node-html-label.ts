@@ -75,10 +75,10 @@ interface CytoscapeNodeHtmlParams {
 
             this.initStyles(params.cssClass);
 
-            const data = payload.data;
+            /*const data = payload.data;
             if (data) {
                 this.updateData(data);
-            }
+            }*/
             /*if (position) {
                 this.updatePosition(position);
             }*/
@@ -115,9 +115,9 @@ interface CytoscapeNodeHtmlParams {
 
         }
 
-        updateData(data: any) {
-            data.tpl(this._node, data);
-        }
+        //updateData(data: any) {
+            //data.tpl(this._node, data);
+        //}
 
         getNode(): HTMLElement {
             return this._node;
@@ -193,12 +193,12 @@ interface CytoscapeNodeHtmlParams {
 
         addOrUpdateElem(id: string, param: CytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
 
-            const cur = this._elements[id];
+            var cur = this._elements[id];
 
 
             if (cur) {
                 cur.updateParams(param);
-                cur.updateData(payload.data);
+                //cur.updateData(payload.data);
                 cur.updatePosition(payload.position);
             } else {
                 const nodeContainer = document.createElement("div")
@@ -206,7 +206,10 @@ interface CytoscapeNodeHtmlParams {
                 //nodeContainer.style.scale = '1';
                 this._node.appendChild(nodeContainer);
 
-                this._elements[id] = new LabelElement(nodeContainer, payload, param);
+                cur = new LabelElement(nodeContainer, payload, param);
+                payload.data.tpl(cur["_node"], payload.data);
+                this._elements[id] = cur;
+
             }
         }
 
@@ -225,14 +228,14 @@ interface CytoscapeNodeHtmlParams {
         }
 
         updatePanZoom({pan, zoom}: { pan: { x: number, y: number }, zoom: number }) {
-            setTimeout(()=>{
+            //setTimeout(()=>{
             const val = `translate(${pan.x.toFixed(0)}px,${pan.y.toFixed(0)}px) scale(${zoom})`;
 
             const stl = <any>this._node.style;
             /*stl.webkitTransform = val;
             stl.msTransform = val;*/
             stl.transform = val;
-            });
+            //});
         }
     }
 

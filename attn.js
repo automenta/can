@@ -1,6 +1,6 @@
 
 function attention(g, nodizer) {
-    const layout = debounce(()=> {
+    const layout = throttle(()=> {
         g.layout( {
             name:
                 //'cose'

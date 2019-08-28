@@ -2,7 +2,7 @@
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-function debounce(func, immediate, wait,_context = null) {
+function debounce(func, wait, immediate = true, _context = null) {
     var timeout;
     return function() {
         const context = _context ? _context : this, args = arguments;
@@ -16,3 +16,25 @@ function debounce(func, immediate, wait,_context = null) {
         if (callNow) func.apply(context, args);
     };
 };
+function throttle(fn, threshhold, scope) {
+    threshhold || (threshhold = 250);
+    var last,
+        deferTimer;
+    return function () {
+        var context = scope || this;
+
+        var now = +new Date,
+            args = arguments;
+        if (last && now < last + threshhold) {
+            // hold on to it
+            clearTimeout(deferTimer);
+            deferTimer = setTimeout(function () {
+                last = now;
+                fn.apply(context, args);
+            }, threshhold);
+        } else {
+            last = now;
+            fn.apply(context, args);
+        }
+    };
+}

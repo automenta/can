@@ -382,7 +382,7 @@
             stage.add(canvas);
 
             // Resize the canvas
-            const sizeCanvas = debounce(() => {
+            const sizeCanvas = throttle(() => {
 
                 setTimeout(() => {
                     const stage = canvas.getStage();
