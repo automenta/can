@@ -635,7 +635,7 @@
        * cherry-picked utilities from underscore.js
        */
       _isElement: function (obj) {
-          return !!(obj && obj.nodeType == 1);
+          return !!(obj && obj.nodeType === 1);
       },
       _isFunction: function (obj) {
           return !!(obj && obj.constructor && obj.call && obj.apply);
@@ -707,7 +707,7 @@
       },
       _isInDocument: function (el) {
           while ((el = el.parentNode)) {
-              if (el == document) {
+              if (el === document) {
                   return true;
               }
           }
@@ -1045,7 +1045,7 @@
       _getProjectionToSegment: function (x1, y1, x2, y2, x3, y3) {
           var x, y, dist;
           var pd2 = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-          if (pd2 == 0) {
+          if (pd2 === 0) {
               x = x1;
               y = y1;
               dist = (x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2);
@@ -2002,7 +2002,7 @@
               if (prop === 'shadowOffsetX' ||
                   prop === 'shadowOffsetY' ||
                   prop === 'shadowBlur') {
-                  val = val / this.canvas.getPixelRatio();
+                  val /= this.canvas.getPixelRatio();
               }
               that._trace({
                   property: prop,
@@ -5249,10 +5249,8 @@
               if (valid) {
                   retArr.push(node);
               }
-              if (valid && findOne) {
-                  return true;
-              }
-              return false;
+              return !!(valid && findOne);
+
           });
           return Collection.toCollection(retArr);
       };
@@ -5654,23 +5652,24 @@
   // CONSTANTS
   var STAGE$1 = 'Stage', STRING = 'string', PX = 'px', MOUSEOUT = 'mouseout', MOUSELEAVE$1 = 'mouseleave', MOUSEOVER = 'mouseover', MOUSEENTER$1 = 'mouseenter', MOUSEMOVE = 'mousemove', MOUSEDOWN = 'mousedown', MOUSEUP = 'mouseup', 
   // TODO: add them into "on" method docs and into site docs
-  POINTERMOVE = 'pointermove', POINTERDOWN = 'pointerdown', POINTERUP = 'pointerup', POINTERCANCEL = 'pointercancel', LOSTPOINTERCAPTURE = 'lostpointercapture', CONTEXTMENU = 'contextmenu', CLICK = 'click', DBL_CLICK = 'dblclick', TOUCHSTART = 'touchstart', TOUCHEND = 'touchend', TAP = 'tap', DBL_TAP = 'dbltap', TOUCHMOVE = 'touchmove', WHEEL = 'wheel', CONTENT_MOUSEOUT = 'contentMouseout', CONTENT_MOUSEOVER = 'contentMouseover', CONTENT_MOUSEMOVE = 'contentMousemove', CONTENT_MOUSEDOWN = 'contentMousedown', CONTENT_MOUSEUP = 'contentMouseup', CONTENT_CONTEXTMENU = 'contentContextmenu', CONTENT_CLICK = 'contentClick', CONTENT_DBL_CLICK = 'contentDblclick', CONTENT_TOUCHSTART = 'contentTouchstart', CONTENT_TOUCHEND = 'contentTouchend', CONTENT_DBL_TAP = 'contentDbltap', CONTENT_TAP = 'contentTap', CONTENT_TOUCHMOVE = 'contentTouchmove', CONTENT_WHEEL = 'contentWheel', RELATIVE = 'relative', KONVA_CONTENT = 'konvajs-content', UNDERSCORE = '_', CONTAINER = 'container', MAX_LAYERS_NUMBER = 5, EMPTY_STRING$1 = '', EVENTS = [
-      MOUSEENTER$1,
+  POINTERMOVE = 'pointermove', POINTERDOWN = 'pointerdown', POINTERUP = 'pointerup', POINTERCANCEL = 'pointercancel', LOSTPOINTERCAPTURE = 'lostpointercapture', CONTEXTMENU = 'contextmenu', CLICK = 'click', DBL_CLICK = 'dblclick', TOUCHSTART = 'touchstart', TOUCHEND = 'touchend', TAP = 'tap', DBL_TAP = 'dbltap', TOUCHMOVE = 'touchmove', WHEEL = 'wheel', CONTENT_MOUSEOUT = 'contentMouseout', CONTENT_MOUSEOVER = 'contentMouseover', CONTENT_MOUSEMOVE = 'contentMousemove', CONTENT_MOUSEDOWN = 'contentMousedown', CONTENT_MOUSEUP = 'contentMouseup', CONTENT_CONTEXTMENU = 'contentContextmenu', CONTENT_CLICK = 'contentClick', CONTENT_DBL_CLICK = 'contentDblclick', CONTENT_TOUCHSTART = 'contentTouchstart', CONTENT_TOUCHEND = 'contentTouchend', CONTENT_DBL_TAP = 'contentDbltap', CONTENT_TAP = 'contentTap', CONTENT_TOUCHMOVE = 'contentTouchmove', CONTENT_WHEEL = 'contentWheel', RELATIVE = 'relative', KONVA_CONTENT = 'konvajs-content', UNDERSCORE = '_', CONTAINER = 'container', MAX_LAYERS_NUMBER = 5, EMPTY_STRING$1 = '',
+      EVENTS = [
+      //MOUSEENTER$1,
       MOUSEDOWN,
       MOUSEMOVE,
       MOUSEUP,
-      MOUSEOUT,
-      TOUCHSTART,
+      //MOUSEOUT,
+      /*TOUCHSTART,
       TOUCHMOVE,
-      TOUCHEND,
-      MOUSEOVER,
-      WHEEL,
-      CONTEXTMENU,
-      POINTERDOWN,
-      POINTERMOVE,
-      POINTERUP,
-      POINTERCANCEL,
-      LOSTPOINTERCAPTURE
+      TOUCHEND,*/
+      //MOUSEOVER,
+      /*WHEEL,*/
+      //CONTEXTMENU,
+      //POINTERDOWN,
+      //POINTERMOVE,
+      //POINTERUP,
+      //POINTERCANCEL,
+      //LOSTPOINTERCAPTURE
   ], 
   // cached variables
   eventsLength = EVENTS.length;
@@ -7180,12 +7179,7 @@
           }
       };
       Shape.prototype.getStrokeHitEnabled = function () {
-          if (this.hitStrokeWidth() === 0) {
-              return false;
-          }
-          else {
-              return true;
-          }
+          return this.hitStrokeWidth() !== 0;
       };
       /**
        * return self rectangle (x, y, width, height) of shape.
@@ -11585,7 +11579,7 @@
                   return undefined;
               }
               var u = (fromX - P1x) * (P2x - P1x) + (fromY - P1y) * (P2y - P1y);
-              u = u / (len * len);
+              u /= (len * len);
               ix = P1x + u * (P2x - P1x);
               iy = P1y + u * (P2y - P1y);
               var pRise = this.getLineLength(fromX, fromY, ix, iy);
@@ -12052,10 +12046,10 @@
               dTheta = 0;
           }
           if (fs === 0 && dTheta > 0) {
-              dTheta = dTheta - 2 * Math.PI;
+              dTheta -= 2 * Math.PI;
           }
           if (fs === 1 && dTheta < 0) {
-              dTheta = dTheta + 2 * Math.PI;
+              dTheta += 2 * Math.PI;
           }
           return [cx, cy, rx, ry, theta, dTheta, psi, fs];
       };
@@ -17049,7 +17043,7 @@
       // make it bigger
       var minSectionSize = xSize / Math.pow(2, power);
       while (minSectionSize <= 8) {
-          minSectionSize = minSectionSize * 2;
+          minSectionSize *= 2;
           power -= 1;
       }
       minSectionSize = Math.ceil(minSectionSize);
@@ -17355,10 +17349,10 @@
                   }
               }
               // Make sure the channels are between 0-255
-              red = red / pixelsInBin;
-              green = green / pixelsInBin;
-              blue = blue / pixelsInBin;
-              alpha = alpha / pixelsInBin;
+              red /= pixelsInBin;
+              green /= pixelsInBin;
+              blue /= pixelsInBin;
+              alpha /= pixelsInBin;
               // Draw this bin
               for (x = xBinStart; x < xBinEnd; x += 1) {
                   if (x >= width) {

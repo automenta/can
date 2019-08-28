@@ -1,7 +1,4 @@
-<!DOCTYPE>
-
 <html>
-
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
@@ -12,36 +9,32 @@
         <script src="debounce.js"></script>
         <script src="lru.js"></script>
 
-        <!-- https://github.com/OSMBuildings/OSMBuildings -->
-        <!--<link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
-        <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
-        <script src="map.js"></script>
-        -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
+        <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
+
+        <link rel="stylesheet prefetch" href="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/themes/prism.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/prism.min.js"></script>
+
+
+        <script src="https://cdn.jsdelivr.net/gh/joewalnes/reconnecting-websocket@latest/reconnecting-websocket.min.js"></script>
+
+        <script src="konva.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.9.1/cytoscape.min.js"></script>
         <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
         <script src="https://unpkg.com/cytoscape-cxtmenu@latest/cytoscape-cxtmenu.js"></script>
         <script src="https://unpkg.com/cytoscape-undo-redo@latest/cytoscape-undo-redo.js"></script>
         <script src="cytoscape-node-html-label.js"></script>
-
-        <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
-        <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>
-
-        <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/js/jquery.terminal.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@11.22.33/css/jquery.terminal.min.css" rel="stylesheet" type="text/css" >
-
-        <script src="https://cdn.jsdelivr.net/gh/joewalnes/reconnecting-websocket@latest/reconnecting-websocket.min.js"></script>
-
-        <script src="konva.js"></script>
-
         <!--<script src="https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/cytoscape-node-resize.js"></script>-->
         <script src="cytoscape-node-resize.js"></script>
 
-        <link rel="stylesheet prefetch" href="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/themes/prism.css"/>
-        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.14.0/prism.min.js"></script>
 
 
+        <!--<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+        <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>-->
 
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.css" rel="stylesheet" type="text/css">
@@ -54,20 +47,24 @@
         <script src="attn.js"></script>
 
 
+        <!-- https://github.com/OSMBuildings/OSMBuildings -->
+        <!--<link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
+        <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
+        <script src="map.js"></script>
+        -->
     </head>
 
     <body>
-        <div id="term" style="padding: 0; width:25%; height:100%; position: fixed; opacity:0.5; top:0;left:0;z-index:5000"></div>
         <div id="graph"></div>
         <!--<div id="map"></div>-->
-
     </body>
     <script>
 
-        window.addEventListener('DOMContentLoaded', () => {
+        $(document).ready(() => {
 
             const g = graph(document.getElementById('graph'));
-            const t = terminal();
+
+            //const t = terminal($('body'));
 
             const a = attention(g, (container, x)=>{
 

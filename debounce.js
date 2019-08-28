@@ -15,20 +15,17 @@ function debounce(func, wait, immediate = true, _context = null) {
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);
     };
-};
+}
 function throttle(fn, threshhold, scope) {
-    threshhold || (threshhold = 250);
     var last,
         deferTimer;
-    return function () {
-        var context = scope || this;
-
-        var now = +new Date,
-            args = arguments;
+    const context = scope || this;
+    return ()=>{
+        const now = +new Date, args = arguments;
         if (last && now < last + threshhold) {
             // hold on to it
             clearTimeout(deferTimer);
-            deferTimer = setTimeout(function () {
+            deferTimer = setTimeout(()=>{
                 last = now;
                 fn.apply(context, args);
             }, threshhold);

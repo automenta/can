@@ -1,5 +1,7 @@
-function terminal() {
-    const term = $('#term');
+function terminal(container) {
+    const term = $('<div class="term" style="padding: 0; width:25%; height:100%; position: fixed; opacity:0.5; top:0;left:0;z-index:5000"></div>');
+    container.prepend(term);
+
     const termStyle = term[0].style;
 
 

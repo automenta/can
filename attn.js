@@ -3,8 +3,8 @@ function attention(g, nodizer) {
     const layout = throttle(()=> {
         g.layout( {
             name:
-                //'cose'
-                'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
+                'cose'
+                //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
                     ,
                     'flow': { axis: 'y', minSeparation: 30 }
             //'infinite': true
