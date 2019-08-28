@@ -58,9 +58,7 @@ function graph(container) {
             {
                 selector: 'node',
                 style: {
-
                     'overlay-opacity': 0,
-                    'label': "",
                     "source-label": "",
                     "target-label": "",
                     'width': 300,
@@ -69,7 +67,15 @@ function graph(container) {
                     'text-border-width': 0,
                     'border-width': 0,
                     'shape': 'hexagon',
-                    'background-color': 'gray'
+                    'background-color': 'gray',
+                    "text-valign": "center",
+                    "text-halign": "center"
+                }
+            }
+            ,{
+                "selector": "node[label]",
+                "style": {
+                    "label": "data(label)"
                 }
             }
         ]

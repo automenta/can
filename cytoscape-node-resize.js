@@ -46,12 +46,12 @@
          * invoked more than once during the `wait` timeout.
          *
          * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
-         * for details over the differences between `_.debounce` and `_.throttle`.
+         * for details over the differences between `_.util` and `_.throttle`.
          *
          * @static
          * @memberOf _
          * @category Function
-         * @param {Function} func The function to debounce.
+         * @param {Function} func The function to util.
          * @param {number} [wait=0] The number of milliseconds to delay.
          * @param {Object} [options] The options object.
          * @param {boolean} [options.leading=false] Specify invoking on the leading
@@ -64,22 +64,22 @@
          * @example
          *
          * // avoid costly calculations while the window size is in flux
-         * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+         * jQuery(window).on('resize', _.util(calculateLayout, 150));
          *
          * // invoke `sendMail` when the click event is fired, debouncing subsequent calls
-         * jQuery('#postbox').on('click', _.debounce(sendMail, 300, {
+         * jQuery('#postbox').on('click', _.util(sendMail, 300, {
          *   'leading': true,
          *   'trailing': false
          * }));
          *
          * // ensure `batchLog` is invoked once after 1 second of debounced calls
          * var source = new EventSource('/stream');
-         * jQuery(source).on('message', _.debounce(batchLog, 250, {
+         * jQuery(source).on('message', _.util(batchLog, 250, {
          *   'maxWait': 1000
          * }));
          *
          * // cancel a debounced call
-         * var todoChanges = _.debounce(batchLog, 1000);
+         * var todoChanges = _.util(batchLog, 1000);
          * Object.observe(models.todo, todoChanges);
          *
          * Object.observe(models, function(changes) {

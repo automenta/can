@@ -6,7 +6,7 @@
 
         <link href="index.css" rel="stylesheet" type="text/css">
 
-        <script src="debounce.js"></script>
+        <script src="util.js"></script>
         <script src="lru.js"></script>
 
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -45,6 +45,7 @@
         <script src="graph.js"></script>
         <script src="terminal.js"></script>
         <script src="attn.js"></script>
+        <script src="websocket.js"></script>
 
 
         <!-- https://github.com/OSMBuildings/OSMBuildings -->
@@ -55,35 +56,20 @@
     </head>
 
     <body>
-        <div id="graph"></div>
+        <div id="g" class="graph"></div>
         <!--<div id="map"></div>-->
     </body>
     <script>
 
         $(document).ready(() => {
 
-            const g = graph(document.getElementById('graph'));
+            const g = graph(document.getElementById('g'));
 
             //const t = terminal($('body'));
 
-            const a = attention(g, (container, x)=>{
+            const a = attention(g);
 
-                if (x.value)
-                    x = x.value; //dereference
-
-
-                if (typeof x === "string") {
-                    container.innerHTML = x.toString();
-                } else if (typeof x === "object" && x.ELEMENT_NODE /* HACK find better way of testing DOM element instances */) {
-
-                    container.appendChild(x);
-
-                } else {
-
-                    jsonEdit(x, container);
-
-                }
-            });
+            a.put('label', 'Primitive Label');
 
             a.put('a', $('<button>x</button>')[0]);
                 //[1,2,3]);
@@ -98,31 +84,7 @@
             });
 
 
-            var ws = new ReconnectingWebSocket('ws://xyz:60606');
-            const channel = ws.url;
-            var mid = 0;
-            //ws.debug = true;
-            ws.onmessage = (e)=>{
-              //https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
-                const y = JSON.parse(e.data, null);
-                a.put(channel + '_' + (mid++), y);
-            };
-            ws.onopen = ()=>{
-                setTimeout(()=> ws.send('x.getClass()'), 2000);
-                setTimeout(()=> ws.send('1+1'), 2500);
-            };
-
-            const inputBox = $("<div contenteditable='true' style='background-color:black; color:orange; width:100%; height:100%'/>");//<button>?</button><textarea cols='25' rows='3'></textarea>").wrap('div')
-            inputBox.keypress((k)=>{
-                if (k.keyCode === 13 /* enter */) {
-                    const i = inputBox.text();
-                    console.log(i);
-                    inputBox.text(''); //clear
-                    ws.send(i);
-                    k.stopPropagation();
-                }
-            });
-            a.put('d', $('<div>').append($('<code>' + ws.url + '</code>'), inputBox)[0]);
+            a.put('d', websocketTest('ws://xyz:60606'));
 
 
             // nodes: [

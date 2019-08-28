@@ -19,9 +19,11 @@ function debounce(func, wait, immediate = true, _context = null) {
 function throttle(fn, threshhold, scope) {
     var last,
         deferTimer;
-    const context = scope || this;
     return ()=>{
-        const now = +new Date, args = arguments;
+        var context = scope || this;
+
+        var now = +new Date,
+            args = arguments;
         if (last && now < last + threshhold) {
             // hold on to it
             clearTimeout(deferTimer);
@@ -34,4 +36,9 @@ function throttle(fn, threshhold, scope) {
             fn.apply(context, args);
         }
     };
+}
+
+function isDOM(x) { return typeof x === "object" && x.ELEMENT_NODE /* HACK find better way of testing DOM element instances */ }
+function isHTMLish(s) {
+    return typeof s === "string" && s.startsWith('<') && s.endsWith('>'); //TODO better HTML detection
 }

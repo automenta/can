@@ -1,5 +1,26 @@
 
-function attention(g, nodizer) {
+
+function attention(g) {
+
+    const nodizer = (container, x)=>{
+
+        if (x.value)
+            x = x.value; //dereference
+
+
+        if (typeof x === "string") {
+            container.innerHTML = x.toString();
+        } else if (isDOM(x)) {
+
+            container.appendChild(x);
+
+        } else {
+
+            jsonEdit(x, container);
+
+        }
+    };
+
     const layout = throttle(()=> {
         g.layout( {
             name:
@@ -16,22 +37,37 @@ function attention(g, nodizer) {
         maxSize: 512,
         accessUpdatesTimestamp: true,
         onAdd: (key,value)=>{
+
             console.log('add', key, value);
 
-            const a = {
-                group: 'nodes',
-                classes: 'html',
-                data: { id:key, value:value, tpl: nodizer },
-            };
+
+            var a;
+            if (typeof value==="string" && !isHTMLish(value)) {
+                //raw label
+                a = {
+                    group: 'nodes',
+                    data: { label: value }
+                };
+            } else  {
+                a = {
+                    group: 'nodes',
+                    classes: 'html',
+                    data: { tpl: nodizer }
+                };
+            }
+
+            a.data.value = value;
+            a.data.id = key;
 
             var eles = g.add([a]);
+
+
 
             layout();
         },
         onRemove: (key,value)=>{
             console.log('rem', key, value);
-            g.remove({ group: 'nodes', data: {
-                    id: key } });
+            g.remove({ group: 'nodes', data: { id: key } });
         }
     });
 
