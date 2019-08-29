@@ -101,6 +101,9 @@
             */
 
             $('<h1/>').text('Tests'),
+            $('<button/>').text('Clear').click(() => {
+                a.clear();
+            }),
             $('<button/>').text('Primitive Label').click(() => {
                 a.put('Primitive Label');
             }),
@@ -123,12 +126,36 @@
             $('<button/>').text('JSONEdit Array').click(() => {
                 a.put('jsonEditArray', [0, 1, 2]);
             }),
-            $('<button/>').text('Sub-node Grow').click(() => {
+            $('<button/>').text('Branch').click(() => {
                 a.put('sg1', 'Root');
 
                 const sub = {x:3}; //'Grown';
                 sub._grow = ['sg1', 0.25];
                 a.put('sg2', sub);
+            }),
+            $('<button/>').text('Sequence').click(() => {
+                var options = {
+                    count: 4,
+                    delayMS: 100
+                    //TODO limit
+                };
+
+                const optEdit = $('<div/>');
+                jsonEdit(options, optEdit[0]);
+
+                const sub = $('<div/>').append(
+                    '<h1>Sequence Test</h1>',
+                    optEdit,
+                    $('<button/>').text('Go').click(()=>{
+                       //run test
+                    })
+                    //count
+                    //speed
+                    //limit (ex: <= count)
+                );
+                sub._grow = ['test', 0.5];
+
+                a.put('seq', sub);
             }),
             //TODO add textfield to specify url before creation
             $('<button/>').text('Websocket Connection').click(() => {

@@ -1,4 +1,4 @@
-
+"use strict";
 
 function attention(g) {
 
@@ -33,7 +33,12 @@ function attention(g) {
                 //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
                     ,
             randomize: false,
-                    'flow': { axis: 'y', minSeparation: 30 },
+                    'flow': { axis: 'y', minSeparation: 10 },
+            componentSpacing: 10,
+            idealEdgeLength: 10,
+
+
+
             //'infinite': true
             stop: ()=>{
                 currentLayout = undefined;
@@ -42,7 +47,7 @@ function attention(g) {
 
     }, 50);
 
-    this.map = new LRUMap({
+    const map = new LRUMap({
         maxSize: 512,
         accessUpdatesTimestamp: true,
         onAdd: (key,value)=>{
@@ -101,15 +106,23 @@ function attention(g) {
         },
         onRemove: (key,value)=>{
             console.log('rem', key, value);
-            g.remove({ group: 'nodes', data: { id: key } });
+            g.getElementById(key).remove();
+            //g.remove({ group: 'nodes', data: { id: key } });
         }
     });
 
-    this.put = function(k, x=k) {
-        if (!this.map.has(k)) {
+    return {
+        map: map,
+
+        clear: function () {
+            map.clear();
+        },
+
+        put: function (k, x = k) {
+            //if (!this.map.has(k)) {
             map.set(k, x);
+            //}
         }
     };
 
-    return this;
 }

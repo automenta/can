@@ -319,6 +319,11 @@ window.LRUMap = (function () {
     };
 
     LRUMap.prototype.clear = function () {
+
+        const that = this;
+        this.forEach((key,value)=>{
+             that._onRemove(key,value);
+        });
         this._map.clear();
         this._total = 0;
     };
@@ -436,7 +441,7 @@ window.LRUMap = (function () {
                 if (_this._accessUpdatesTimestamp) {
                     value.timestamp = +(new Date);
                 }
-                return callback.call(thisArg, value.value, key, _this);
+                return callback.call(thisArg, key, value.value, _this);
             };
         })(this));
     };
