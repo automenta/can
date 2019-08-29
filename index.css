@@ -8,6 +8,9 @@ body {
     padding: 0;
     overflow: hidden;
 }
+div {
+    border-radius: 0 !important;
+}
 
 .graph {
     width: 100%;

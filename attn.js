@@ -327,13 +327,17 @@ function initDoubleClick(a) { //TODO not global func
     d.dblclick((e) => {
         const teContainer = $('<div/>');
         teContainer.css({
-            'height': '4em',
-            'width': '16em',
-            'display': 'table' //??
+            'height': '8em',
+            'width': '8em',
+            'display': 'table', //??
+            'border': '1px solid gray',
+            'background-color': 'black', //TEMPORARY
+            'color': 'green'
         });
         const te = textedit(teContainer[0]);
+
         teContainer.pos = lastClick;
-        teContainer.shape = 'rectangle';
+        teContainer.shape = 'rectangle'; //TODO none
 
         lastClick = undefined;
         //console.log(e);

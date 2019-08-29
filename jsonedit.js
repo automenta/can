@@ -17,7 +17,7 @@ function jsonEdit(json, container) {
 }
 
 function textedit(container) {
-    const options = {
+    /*const options = {
         //mode: 'code',
         mode: 'text',
         search: false,
@@ -25,5 +25,9 @@ function textedit(container) {
         navigationBar: false,
         statusBar: false
     };
-    return new JSONEditor(container, options);
+    return new JSONEditor(container, options);*/
+
+    const editableDiv = $('<div contenteditable="true"/>');
+    editableDiv.focus();
+    $(container).append(editableDiv);
 }
