@@ -79,9 +79,10 @@ interface CytoscapeNodeHtmlParams {
             if (data) {
                 this.updateData(data);
             }*/
-            /*if (position) {
+            const position = payload.position;
+            if (position) {
                 this.updatePosition(position);
-            }*/
+            }
         }
 
 

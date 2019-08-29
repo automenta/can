@@ -83,7 +83,7 @@ function graph(container) {
             },
             styleFrom('label'),
             styleFrom('shape'),
-            styleFrom('background-color')
+            //styleFrom('background-color')
         ]
     });
 
@@ -132,8 +132,10 @@ function graph(container) {
 
         //
 
-    $("canvas")[0].remove(); //HACK to remove useless layers
-    //TODO 2, etc
+    setTimeout(()=>{
+        $(cy._private.container).find('canvas').first().remove(); //HACK to remove useless layers
+        //TODO 2, etc
+    });
 
 
     return cy;

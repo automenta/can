@@ -33,11 +33,11 @@ function attention(g) {
                 //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
                     ,
             randomize: false,
-                    'flow': { axis: 'y', minSeparation: 10 },
+                    //'flow': { axis: 'y', minSeparation: 10 },
             componentSpacing: 10,
             idealEdgeLength: 10,
 
-
+            padding: 0,
 
             //'infinite': true
             stop: ()=>{
@@ -67,11 +67,19 @@ function attention(g) {
                     group: 'nodes',
                     classes: 'html',
                     data: {
-                        shape: 'hexagon',
+                        shape: value.shape || 'hexagon',
                         //shape: 'rectangle',
                         tpl: nodizer }
                 };
+
             }
+
+            var positioned;
+            if (value.pos && typeof(value.pos)=="object") {
+                positioned = true;
+                a.position = value.pos;
+            } else
+                positioned = false;
 
             a.data.value = value;
             a.data.id = key;
@@ -95,14 +103,14 @@ function attention(g) {
                 const h = origin.height() * scalingSqrt;
                 added.style('width', w);
                 added.style('height', h);
-                //console.log(w, h, added.style);
+
 
                 const edgesAdded = g.add([ {group: 'edges', data: { /*id: originID+'_'+key, */source: originID, target: key }}]);
                 //console.log(edgesAdded);
             }
 
-
-            layout();
+            if (!positioned)
+                layout();
         },
         onRemove: (key,value)=>{
             console.log('rem', key, value);
@@ -111,7 +119,9 @@ function attention(g) {
         }
     });
 
-    return {
+
+
+    const a = {
         map: map,
 
         clear: function () {
@@ -124,5 +134,34 @@ function attention(g) {
             //}
         }
     };
+
+
+
+
+
+    var lastClick = undefined;
+    g.on('tap',  e=> lastClick = e.position); //HACK for saving the model coordinates for dblclick
+
+    const d = $(g._private.container);
+    d.dblclick((e)=>{
+        const teContainer = $('<div/>');
+        teContainer.css({
+            'height': '4em',
+            'width': '16em',
+            'display': 'table' //??
+        });
+        const te = textedit(teContainer[0]);
+        teContainer.pos = lastClick;
+        teContainer.shape = 'rectangle';
+
+        lastClick = undefined;
+        //console.log(e);
+        //te.setText(JSON.stringify(e.originalEvent, null));
+
+        a.put(uuid(), teContainer)
+    });
+
+
+    return a;
 
 }

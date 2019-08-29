@@ -135,27 +135,35 @@
             }),
             $('<button/>').text('Sequence').click(() => {
                 var options = {
+                    id: "MySequence",
                     count: 4,
                     delayMS: 100
                     //TODO limit
                 };
 
                 const optEdit = $('<div/>');
-                jsonEdit(options, optEdit[0]);
+                const optionsEdit = jsonEdit(options, optEdit[0]);
 
                 const sub = $('<div/>').append(
-                    '<h1>Sequence Test</h1>',
+                    '<h2>Sequence Test</h2>',
                     optEdit,
                     $('<button/>').text('Go').click(()=>{
-                       //run test
+                        //run test
+                        options = optionsEdit.get();
+                        for (var i = 0; i < options.count; i++) {
+                            const I = i;
+                            setTimeout(()=>{
+                                a.put(options.id + '_' + I);
+                            }, options.delayMS * I);
+                        }
                     })
-                    //count
-                    //speed
-                    //limit (ex: <= count)
                 );
                 sub._grow = ['test', 0.5];
 
                 a.put('seq', sub);
+            }),
+            $('<button/>').text('Push').click(() => {
+                //TODO
             }),
             //TODO add textfield to specify url before creation
             $('<button/>').text('Websocket Connection').click(() => {
