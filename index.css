@@ -8,9 +8,7 @@ body {
     padding: 0;
     overflow: hidden;
 }
-div {
-    border-radius: 0 !important;
-}
+
 
 .graph {
     width: 100%;
@@ -19,20 +17,14 @@ div {
 
 }
 
-
-
-.term {
-    transition: width 0.5s ease, height 0.3s ease, opacity, 1s ease;
-}
-
 .htmlOverlays {
     position: absolute;
     z-index: 2000;
     pointer-events: none;
-    margin: 0px;
-    padding: 0px;
-    border: 0px;
-    outline: 0px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
     transform-origin: top left;
 }
 .htmlOverlay {
@@ -42,10 +34,22 @@ div {
 .htmlOverlay * {
     pointer-events: all;
 }
+
+
+
 div.jsoneditor-readonly {
     color: orange !important;
 }
 div.jsoneditor {
     background-color: #999 !important;
     border: 0 !important;
+}
+div {
+    border-radius: 0 !important;
+}
+
+
+/* popup terminal */
+.term {
+    transition: width 0.5s ease, height 0.3s ease, opacity, 1s ease;
 }

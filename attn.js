@@ -57,6 +57,8 @@ function attention(g) {
             console.log('add', key, value);
 
 
+
+
             var a;
             if (typeof value==="string" && !isHTMLish(value)) {
                 //raw label
@@ -74,6 +76,14 @@ function attention(g) {
                         tpl: nodizer }
                 };
 
+            }
+
+            if (Math.random() < 0.5) {
+                //TEMPORARY
+                if (a.classes)
+                    a.classes = a.classes + " frame";
+                else
+                    a.classes = "frame";
             }
 
             var positioned;

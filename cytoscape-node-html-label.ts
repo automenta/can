@@ -13,7 +13,8 @@ interface CytoscapeNodeHtmlParams {
     halignBox?: IHAlign;
     valignBox?: IVAlign;
     cssClass?: string;
-    //tpl?: (d: any) => string;
+    tpl?: (d: any) => string;
+    contentExpand?: Boolean;
 }
 
 (function () {
@@ -24,10 +25,9 @@ interface CytoscapeNodeHtmlParams {
         }
         const length = arr.length;
         const thisArg = arguments[1];
-        let value;
 
         for (let i = 0; i < length; i++) {
-            value = arr[i];
+            const value = arr[i];
             if (predicate.call(thisArg, value, i, arr)) {
                 return value;
             }
@@ -70,6 +70,7 @@ interface CytoscapeNodeHtmlParams {
         constructor(node : HTMLElement, payload: any,
                     params: CytoscapeNodeHtmlParams) {
 
+            this.contentExpand = params.contentExpand;
             this.updateParams(params);
             this._node = node;
 
@@ -126,27 +127,16 @@ interface CytoscapeNodeHtmlParams {
 
         updatePosition(pos: ICytoscapeNodeHtmlPosition) {
 
-            this._renderPosition(pos);
-        }
-
-        private initStyles(cssClass: string) {
-            let stl = this._node.style;
-            if (cssClass && cssClass.length)
-                this._node.classList.add(cssClass);
-        }
-
-        private _renderPosition(position: ICytoscapeNodeHtmlPosition) {
             var prev = this._position;
 
-            const x = position.x;// + this._align[0] * position.w;
-            const y = position.y;// + this._align[1] * position.h;
+            const x = pos.x;// + this._align[0] * position.w;
+            const y = pos.y;// + this._align[1] * position.h;
 
 
             const thresh = 0.5;
             if (Math.abs(x - prev[0]) > thresh || Math.abs(y - prev[1]) > thresh) {
                 prev[0] = x;
                 prev[1] = y;
-
 
 
                 //TODO cache better
@@ -167,13 +157,19 @@ interface CytoscapeNodeHtmlParams {
                 stl.transform = val;
 
                 if (this.contentExpand) {
-                    stl.width = position.w.toFixed(0);
-                    stl.height = position.h.toFixed(0);
+                    stl.width = pos.w.toFixed(0);
+                    stl.height = pos.h.toFixed(0);
                 } else {
                     //stl.scale =
                 }
 
             }
+        }
+
+        private initStyles(cssClass: string) {
+            let stl = this._node.style;
+            if (cssClass && cssClass.length)
+                this._node.classList.add(cssClass);
         }
     }
 
@@ -208,7 +204,11 @@ interface CytoscapeNodeHtmlParams {
                 this._node.appendChild(nodeContainer);
 
                 cur = new LabelElement(nodeContainer, payload, param);
-                payload.data.tpl(cur["_node"], payload.data);
+
+                const tpl = param.tpl || payload.data.tpl;
+                if (tpl)
+                    tpl(cur["_node"], payload.data);
+
                 this._elements[id] = cur;
 
             }
@@ -223,9 +223,8 @@ interface CytoscapeNodeHtmlParams {
 
         updateElemPosition(id: string, position?: ICytoscapeNodeHtmlPosition) {
             const ele = this._elements[id];
-            if (ele) {
+            if (ele)
                 ele.updatePosition(position);
-            }
         }
 
         updatePanZoom({pan, zoom}: { pan: { x: number, y: number }, zoom: number }) {
@@ -249,11 +248,11 @@ interface CytoscapeNodeHtmlParams {
             wrapCyHandler(e);
         });
         _cy.on("add", addCyHandler);
-        _cy.on("layoutstop", layoutstopHandler);
         _cy.on("remove", removeCyHandler);
         _cy.on("data", updateDataCyHandler);
         _cy.on("pan zoom", wrapCyHandler);
         _cy.on("position bounds", moveCyHandler); // "bounds" - not documented event
+        //_cy.on("layoutstop", layoutstopHandler);
 
         return _cy;
 
@@ -304,7 +303,7 @@ interface CytoscapeNodeHtmlParams {
             }
         }
 
-        function layoutstopHandler({cy}: ICyEventObject) {
+        /*function layoutstopHandler({cy}: ICyEventObject) {
             _params.forEach(x => {
                 cy.nodes(x.query).forEach((d: any) => {
                     //if (d.isNode()) {
@@ -312,7 +311,7 @@ interface CytoscapeNodeHtmlParams {
                     //}
                 });
             });
-        }
+        }*/
 
         function removeCyHandler(ev: ICyEventObject) {
             labels.removeElemById(ev.target.id());
@@ -359,9 +358,8 @@ interface CytoscapeNodeHtmlParams {
 // registers the extension on a cytoscape lib ref
     let register = function (cy: any) {
 
-        if (!cy) {
-            return;
-        } // can't register if cytoscape unspecified
+        if (!cy)
+            return; // can't register if cytoscape unspecified
 
         cy("core", "nodeHtmlLabel", function (optArr: any) {
             return cyNodeHtmlLabel(this, optArr);

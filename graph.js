@@ -3,12 +3,12 @@
 function graph(container) {
 
 
-    const styleFrom = (style)=>{
+    const styleFrom = (style, dataKey=style) => {
         const s = {
-            "selector": "node[" + style + "]",
+            "selector": "node[" + dataKey + "]",
             "style": { }
         };
-        s.style[style] = 'data(' + style + ')';
+        s.style[style] = 'data(' + dataKey + ')';
         return s;
     };
 
@@ -56,7 +56,16 @@ function graph(container) {
 
 
             }]);
+            c.nodeHtmlLabel([{
+                query: ".frame",
+                cssClass: 'htmlOverlay',
+                contentExpand: true,
+                tpl: (container,data) => {
+                    $(container).append($('<button/>').text('x').css({position:'absolute', right:0}).click(()=>{
 
+                    }));
+                }
+            }]);
         },
         style: [
             {
