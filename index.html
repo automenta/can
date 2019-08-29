@@ -22,7 +22,7 @@
 
     <script src="https://cdn.jsdelivr.net/gh/joewalnes/reconnecting-websocket@latest/reconnecting-websocket.min.js"></script>
 
-    <script src="konva.js"></script>
+    <script src="konva.hacked.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.9.1/cytoscape.min.js"></script>
     <link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -123,7 +123,13 @@
             $('<button/>').text('JSONEdit Array').click(() => {
                 a.put('jsonEditArray', [0, 1, 2]);
             }),
+            $('<button/>').text('Sub-node Grow').click(() => {
+                a.put('sg1', 'Root');
 
+                const sub = {x:3}; //'Grown';
+                sub._grow = ['sg1', 0.25];
+                a.put('sg2', sub);
+            }),
             //TODO add textfield to specify url before creation
             $('<button/>').text('Websocket Connection').click(() => {
                 a.put('websocket1', websocketTest('ws://xyz:60606'));

@@ -5613,10 +5613,10 @@
      */
     Collection.mapMethods(Container);
 
-    var Captures = new Map();
+    const Captures = new Map();
     // we may use this module for capturing touch events too
     // so make sure we don't do something super specific to pointer
-    var SUPPORT_POINTER_EVENTS = Konva._global['PointerEvent'] !== undefined;
+    const SUPPORT_POINTER_EVENTS = Konva._global['PointerEvent'] !== undefined;
     function getCapturedShape(pointerId) {
         return Captures.get(pointerId);
     }
@@ -5748,7 +5748,7 @@
             }
         };
         Stage.prototype._checkVisibility = function () {
-            var style = this.visible() ? '' : 'none';
+            const style = this.visible() ? '' : 'none';
             this.content.style.display = style;
         };
         /**
@@ -5893,7 +5893,7 @@
         };
         Stage.prototype._resizeDOM = function () {
             if (this.content) {
-                var width = this.width(), height = this.height(), layers = this.getChildren(), len = layers.length, n, layer;
+                var width = this.width(), height = this.height(), layers = this.getChildren(), len = layers.length, n;
                 // set content dimensions
                 this.content.style.width = width + PX;
                 this.content.style.height = height + PX;
@@ -5901,7 +5901,7 @@
                 this.bufferHitCanvas.setSize(width, height);
                 // set layer dimensions
                 for (n = 0; n < len; n++) {
-                    layer = layers[n];
+                    const layer = layers[n];
                     layer.setSize({ width: width, height: height });
                     layer.draw();
                 }

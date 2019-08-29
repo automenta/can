@@ -23,15 +23,21 @@ function attention(g) {
         }
     };
 
+    var currentLayout = undefined;
     const layout = throttle(()=> {
-        g.layout( {
+        if (currentLayout)
+            currentLayout.stop();
+        currentLayout = g.layout( {
             name:
                 'cose'
                 //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
                     ,
             randomize: false,
-                    'flow': { axis: 'y', minSeparation: 30 }
+                    'flow': { axis: 'y', minSeparation: 30 },
             //'infinite': true
+            stop: ()=>{
+                currentLayout = undefined;
+            }
         }).run();
 
     }, 50);
@@ -65,8 +71,30 @@ function attention(g) {
             a.data.value = value;
             a.data.id = key;
 
-            var eles = g.add([a]);
+            var added = g.add([a]);
 
+            if (value._grow) {
+                //apply grow
+                // TODO use destructuring
+                const originID = value._grow[0];
+                const scaling = value._grow[1];
+                if (originID == key)
+                    throw 'circular reference';
+                const origin = g.getElementById(originID);
+                if (origin.length === 0)
+                    throw 'origin node not found: ' + originID;
+
+
+                const scalingSqrt = Math.sqrt(scaling);
+                const w = origin.width() * scalingSqrt;
+                const h = origin.height() * scalingSqrt;
+                added.style('width', w);
+                added.style('height', h);
+                //console.log(w, h, added.style);
+
+                const edgesAdded = g.add([ {group: 'edges', data: { /*id: originID+'_'+key, */source: originID, target: key }}]);
+                //console.log(edgesAdded);
+            }
 
 
             layout();
