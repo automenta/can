@@ -23,34 +23,61 @@ function attention(g) {
         }
     };
 
-    var currentLayout = undefined;
-    const layout = throttle(()=> {
-        if (currentLayout) {
-            currentLayout.stop();
-            currentLayout = undefined;
-        }
-        currentLayout = g.layout( {
-            name:
-                'cose'
-                //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
-                    ,
-            randomize: false,
-                    //'flow': { axis: 'y', minSeparation: 10 },
-            componentSpacing: 10,
-            idealEdgeLength: 10,
+    // var currentLayout = undefined;
+    // const layout = throttle(()=> {
+    //     if (currentLayout) {
+    //         currentLayout.stop();
+    //         currentLayout = undefined;
+    //     }
+    //     currentLayout = g.layout( {
+    //         name:
+    //             'cose'
+    //             //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
+    //                 ,
+    //         randomize: false,
+    //                 //'flow': { axis: 'y', minSeparation: 10 },
+    //         componentSpacing: 10,
+    //         idealEdgeLength: 10,
+    //
+    //         padding: 0,
+    //         //animationThreshold: 1,
+    //         //refresh:1,
+    //
+    //         //'infinite': true
+    //         stop: ()=>{
+    //             currentLayout = undefined;
+    //         }
+    //     }).run();
+    //     console.log(currentLayout);
+    //
+    // }, 50);
 
-            padding: 0,
-            //animationThreshold: 1,
-            //refresh:1,
-
-            //'infinite': true
-            stop: ()=>{
-                currentLayout = undefined;
-            }
-        }).run();
-        console.log(currentLayout);
-
-    }, 50);
+    // const layoutParam = {
+    //             name:
+    //
+    //                 'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
+    //                     ,
+    //             randomize: false,
+    //                     //'flow': { axis: 'y', minSeparation: 10 },
+    //             componentSpacing: 10,
+    //             idealEdgeLength: 10,
+    //
+    //     fit:false,
+    //     refresh:1,
+    //             padding: 0,
+    //             //animationThreshold: 1,
+    //
+    //             numIter: 1,
+    //             animate:true,
+    //     maxSimulationTime: 25,
+    //
+    //
+    // };
+    //
+    // setInterval(()=>{
+    //     var layout = g.layout(layoutParam);
+    //     layout.run();
+    // }, 150);
 
     g.nodeHtmlLabel([{
         query: ".html",

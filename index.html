@@ -34,8 +34,8 @@
     <script src="cytoscape-node-resize.js"></script>
 
 
-    <!--<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
-    <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>-->
+    <!--    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>-->
+    <!--    <script src="https://unpkg.com/cytoscape-cola@latest/cytoscape-cola.js"></script>-->
 
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/6.3.0/jsoneditor.min.css" rel="stylesheet"
@@ -62,7 +62,7 @@
 <!--<div id="map"></div>-->
 </body>
 <script>
-
+    "use strict";
     $(document).ready(() => {
 
         const g = graph(document.getElementById('g'));
@@ -105,6 +105,28 @@
             $('<button/>').text('Clear').click(() => {
                 a.clear();
             }),
+            $('<button/>').text('COSE layout').click(() => {
+                g.layout({
+                    name:
+                        'cose'
+                    //'cola' //https://github.com/cytoscape/cytoscape.js-cola#api
+                    ,
+                    randomize: false,
+                    //'flow': { axis: 'y', minSeparation: 10 },
+                    componentSpacing: 10,
+                    idealEdgeLength: 10,
+
+                    padding: 0,
+                    //animationThreshold: 1,
+                    //refresh:1,
+
+                    //'infinite': true
+                    stop: () => {
+
+                    }
+                }).run();
+
+            }),
             $('<button/>').text('Primitive Label').click(() => {
                 a.put('Primitive Label');
             }),
@@ -130,7 +152,7 @@
             $('<button/>').text('Branch').click(() => {
                 a.put('sg1', 'Root');
 
-                const sub = {x:3}; //'Grown';
+                const sub = {x: 3}; //'Grown';
                 sub._grow = ['sg1', 0.25];
                 a.put('sg2', sub);
             }),
@@ -148,13 +170,17 @@
                 const sub = $('<div/>').append(
                     '<h2>Sequence Test</h2>',
                     optEdit,
-                    $('<button/>').text('Go').click(()=>{
+                    $('<button/>').text('Go').click(() => {
                         //run test
                         options = optionsEdit.get();
                         for (var i = 0; i < options.count; i++) {
                             const I = i;
-                            setTimeout(()=>{
-                                a.put(options.id + '_' + I);
+                            setTimeout(() => {
+                                const e = $('<button>' + I + '</button>');
+                                if (i > 0) {
+                                    e._grow = [options.id + '_' + (I - 1), 0.8];
+                                }
+                                a.put(options.id + '_' + I, e);
                             }, options.delayMS * I);
                         }
                     })
