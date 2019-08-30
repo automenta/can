@@ -119,10 +119,11 @@ function graph(container) {
 
 
     setTimeout(()=>{
-        $(cy._private.container).find('canvas').first().remove(); //HACK to remove useless layers
+        $(cy.container()).find('canvas').first().remove(); //HACK to remove useless layers
         //TODO 2, etc
     });
 
+    cy.renderer().skipFrame = true;
 
     return cy;
 }

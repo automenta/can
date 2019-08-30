@@ -40,12 +40,15 @@ function attention(g) {
             idealEdgeLength: 10,
 
             padding: 0,
+            //animationThreshold: 1,
+            //refresh:1,
 
             //'infinite': true
             stop: ()=>{
                 currentLayout = undefined;
             }
         }).run();
+        console.log(currentLayout);
 
     }, 50);
 
@@ -134,8 +137,10 @@ function attention(g) {
                 //console.log(edgesAdded);
             }
 
-            if (!positioned)
-                layout();
+            if (!positioned) {
+                added.layout({name:'random', fit:false, boundingBox: g.extent()}).run();
+                //layout();
+            }
         },
         onRemove: (key,value)=>{
             console.log('rem', key, value);
@@ -358,8 +363,13 @@ function initDoubleClick(a) { //TODO not global func
     d.dblclick((e) => {
         const teContainer = $('<div/>');
         teContainer.css({
-            'height': '8em',
-            'width': '8em',
+       //     'height': '8em',
+//            'width': '8em',
+            'position': 'absolute',
+            'left': '5%',
+            'top': '5%',
+            'width': '90%',
+            'max-height': '90%',
             'display': 'table', //??
             'border': '1px solid gray',
             'background-color': 'black', //TEMPORARY
@@ -373,6 +383,8 @@ function initDoubleClick(a) { //TODO not global func
         lastClick = undefined;
         //console.log(e);
         //te.setText(JSON.stringify(e.originalEvent, null));
+
+        teContainer.contentExpand = true;
 
         a.put(uuid(), teContainer)
     });

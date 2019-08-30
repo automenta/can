@@ -70,7 +70,10 @@ interface CytoscapeNodeHtmlParams {
         constructor(node : HTMLElement, payload: any,
                     params: CytoscapeNodeHtmlParams) {
 
-            this.contentExpand = params.contentExpand;
+
+
+            this.contentExpand = params.contentExpand || (payload.data && payload.data.value ? payload.data.value.contentExpand : false);
+
             this.updateParams(params);
             this._node = node;
 
@@ -189,6 +192,8 @@ interface CytoscapeNodeHtmlParams {
         }
 
         addOrUpdateElem(id: string, param: CytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
+
+
 
             var cur = this._elements[id];
 
