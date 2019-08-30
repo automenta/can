@@ -26,46 +26,7 @@ function graph(container) {
         //wheelSensitivity: 0.5,
         ready: (x)=>{
 
-            //console.log(x);
-            const c  = x.cy;
 
-            /* https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tree/3051babea3e9f72581c1b0212802426e293317c4 */
-            c.nodeResize({
-                undoable: false,
-                grappleColor: 'rgba(250, 250, 250, 0.5)',
-                boundingRectangleLineColor: 'rgba(250, 120, 0, 0.5)',
-                boundingRectangleLineWidth: 2,
-                boundingRectangleLineDash: null,
-                resizeToContentCueImage:
-                    'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
-            });
-
-
-
-            c.nodeHtmlLabel([{
-                query: ".html",
-                cssClass: 'htmlOverlay'
-                /*tpl: (container, data) => {
-                    if (data.tpl) {
-                        data.tpl(container, data);
-                        console.log(container);
-                    } } */
-                    //console.log(container, data);
-                    /*container.innerHTML = //'<a class="cy-title__p2">' + data.id + '</a>' + '<p  class="cy-title__p2">' + data.name + '</p>';
-                        '<div style="background-color:rgba(0,0,255.0,0.25)"><button>test</button><div contentEditable>sd hfsrpf23h2 phf3f32 kjh23kjh 23kh23khk2hf 23h k23hf23 hf2 h2khf23k</div></div>';*/
-
-
-            }]);
-            c.nodeHtmlLabel([{
-                query: ".frame",
-                cssClass: 'htmlOverlay',
-                contentExpand: true,
-                tpl: (container,data) => {
-                    $(container).append($('<button/>').text('x').css({position:'absolute', right:0}).click(()=>{
-
-                    }));
-                }
-            }]);
         },
         style: [
             {
@@ -140,6 +101,22 @@ function graph(container) {
         //
 
         //
+    //console.log(x);
+    //const c  = x.cy;
+
+    /* https://github.com/iVis-at-Bilkent/cytoscape.js-node-resize/tree/3051babea3e9f72581c1b0212802426e293317c4 */
+    cy.nodeResize({
+        undoable: false,
+        grappleColor: 'rgba(250, 250, 250, 0.5)',
+        boundingRectangleLineColor: 'rgba(250, 120, 0, 0.5)',
+        boundingRectangleLineWidth: 2,
+        boundingRectangleLineDash: null,
+        resizeToContentCueImage:
+            'https://cdn.jsdelivr.net/gh/iVis-at-Bilkent/cytoscape.js-node-resize@unstable/resizeCue.svg'
+    });
+
+
+
 
     setTimeout(()=>{
         $(cy._private.container).find('canvas').first().remove(); //HACK to remove useless layers

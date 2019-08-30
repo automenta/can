@@ -117,9 +117,9 @@ window.LRUMap = (function () {
             entries = this._map.entries();
             while (this._total > this._maxSize) {
                 oldest = entries.next().value;
-                if (oldest == null) {
+                if (oldest == null)
                     break;
-                }
+
                 this._map["delete"](oldest[0]);
                 this._total -= oldest[1].size;
                 this._onEvict(oldest[0], oldest[1].value);
@@ -306,10 +306,11 @@ window.LRUMap = (function () {
         }
     };
 
-    LRUMap.prototype.delete = LRUMap.prototype["delete"] = function (key) {
+    const del = function (key) {
         if (this._map.has(key)) {
             this._total -= this.sizeOf(key);
-            this._map["delete"](key);
+            const value = this._map["delete"](key);
+            this._onRemove(key, value);
             this.reapStale();
             return true;
         } else {
@@ -317,6 +318,7 @@ window.LRUMap = (function () {
             return false;
         }
     };
+    LRUMap.prototype.delete = LRUMap.prototype["delete"] = del;
 
     LRUMap.prototype.clear = function () {
 

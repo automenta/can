@@ -49,6 +49,24 @@ function attention(g) {
 
     }, 50);
 
+    g.nodeHtmlLabel([{
+        query: ".html",
+        cssClass: 'htmlOverlay'
+    }]);
+
+    var _remove = undefined; //set below
+
+    g.nodeHtmlLabel([{
+        query: ".frame",
+        cssClass: 'htmlOverlay',
+        contentExpand: true,
+        tpl: (container,data) => {
+            $(container).append($('<button/>').text('x').css({position:'absolute', right:0}).click(()=>{
+                _remove(data.id);
+            }));
+        }
+    }]);
+
     const map = new LRUMap({
         maxSize: 512,
         accessUpdatesTimestamp: true,
@@ -78,13 +96,8 @@ function attention(g) {
 
             }
 
-            if (Math.random() < 0.5) {
-                //TEMPORARY
-                if (a.classes)
-                    a.classes = a.classes + " frame";
-                else
-                    a.classes = "frame";
-            }
+            //add metaframe layer
+            a.classes = a.classes ? a.classes + " frame" : "frame";
 
             var positioned;
             if (value.pos && typeof(value.pos)=="object") {
@@ -146,9 +159,17 @@ function attention(g) {
             //if (!this.map.has(k)) {
             map.set(k, x);
             //}
+        },
+
+        remove: function(k) {
+            map.delete(k);
         }
+
     };
 
+    _remove = (x)=>{
+        a.remove(x);
+    };
 
     g.bind('mouseover', 'node', (t)=>{
        //console.log(t.target.id());
