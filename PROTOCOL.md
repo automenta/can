@@ -18,8 +18,8 @@ Lowest common denominator input.
 ## Identity
 
 ### ._
-A JSON object with a key '_' pointing to a raw value,
-and any of the following modifiers specified in the following keys.
+A JSON object with a key '_' pointing to a raw value that will be dereferenced prior to rendering.
+Any of the following modifiers can be specified in the wrapping object's keys.
 :ok:
 
 ### .id 
@@ -68,7 +68,7 @@ rectangle, hexagon, circle, etc
 ### .color
 background shape color, as CSS string
 
-### .scale = [ targetID, howMuch{, aspctRatio} ]
+### .scale = [ targetID, howMuch{, aspectRatio} ]
 sets size scaled relative to another node with optional specific aspectRatio 
 
 ### .focus

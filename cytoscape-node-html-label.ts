@@ -72,7 +72,9 @@ interface CytoscapeNodeHtmlParams {
 
 
 
-            this.fill = params.fill || (payload.data && payload.data.value ? payload.data.value.fill : false);
+            this.fill = (params.fill || (payload.data && payload.data.value ? payload.data.value.fill : false));
+            if (typeof(this.fill)!=="boolean")
+                this.fill = false; //HACK for array.fill if data value is Array
 
             this.updateParams(params);
             this._node = node;
