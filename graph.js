@@ -48,7 +48,9 @@ function graph(container) {
                     'border-width': 0,
                     'background-color': 'gray',
                     "text-valign": "center",
-                    "text-halign": "center"
+                    "text-halign": "center",
+                    'shape': 'hexagon'
+
                 }
             },
             styleFrom('label'),

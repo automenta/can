@@ -14,7 +14,7 @@ interface CytoscapeNodeHtmlParams {
     valignBox?: IVAlign;
     cssClass?: string;
     tpl?: (d: any) => string;
-    contentExpand?: Boolean;
+    fill?: Boolean;
 }
 
 (function () {
@@ -64,7 +64,7 @@ interface CytoscapeNodeHtmlParams {
         private _position: number[] = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY];
         private _node: HTMLElement;
         private _align: [number, number, number, number];
-        private contentExpand: Boolean = false;
+        private fill: Boolean = false;
 
 
         constructor(node : HTMLElement, payload: any,
@@ -72,7 +72,7 @@ interface CytoscapeNodeHtmlParams {
 
 
 
-            this.contentExpand = params.contentExpand || (payload.data && payload.data.value ? payload.data.value.contentExpand : false);
+            this.fill = params.fill || (payload.data && payload.data.value ? payload.data.value.fill : false);
 
             this.updateParams(params);
             this._node = node;
@@ -159,7 +159,7 @@ interface CytoscapeNodeHtmlParams {
                 stl.msTransform = val;*/
                 stl.transform = val;
 
-                if (this.contentExpand) {
+                if (this.fill) {
                     stl.width = pos.w.toFixed(0);
                     stl.height = pos.h.toFixed(0);
                 } else {

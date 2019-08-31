@@ -89,7 +89,7 @@ function attention(g) {
     g.nodeHtmlLabel([{
         query: ".frame",
         cssClass: 'htmlOverlay',
-        contentExpand: true,
+        fill: true,
         tpl: (container,data) => {
             $(container).append($('<button/>').text('x').css({position:'absolute', right:0}).click(()=>{
                 _remove(data.id);
@@ -97,78 +97,97 @@ function attention(g) {
         }
     }]);
 
+    const add = (key,obj)=>{
+
+        console.log('add', key, obj);
+        var value = obj;
+        if (typeof(obj)==="object") {
+            const u = obj['_'];
+            if (u)
+                value = u; //dereference
+        }
+
+
+        /** the add transaction (for cytoscape) */
+        var a;
+
+        if (typeof value==="string" && !isHTMLish(value)) {
+            //raw label
+            a = {
+                group: 'nodes',
+                data: { label: value }
+            };
+        } else  {
+            a = {
+                group: 'nodes',
+                classes: 'html',
+                data: { tpl: nodizer }
+            };
+
+        }
+
+        const data = a.data;
+        data.value = value;
+        data.id = key;
+
+
+        if (value.shape) {
+            data.shape = value.shape;
+        }
+
+        //add metaframe layer
+        a.classes = a.classes ? a.classes + " frame" : "frame";
+
+        var positioned;
+        if (value.pos) {
+            positioned = true;
+            a.position = { x: value.pos[0], y: value.pos[1] };
+        } else
+            positioned = false;
+
+        if (value.size) {
+            a.width = value.size[0];
+            a.height = value.size[1];
+        }
+
+
+        var added = g.add([a]);
+
+        if (value._grow) {
+            //apply grow
+            // TODO use destructuring
+            const originID = value._grow[0];
+            const scaling = value._grow[1];
+            if (originID == key)
+                throw 'circular reference';
+            const origin = g.getElementById(originID);
+            if (origin.length === 0)
+                throw 'origin node not found: ' + originID;
+
+
+            const scalingSqrt = Math.sqrt(scaling);
+            const w = origin.width() * scalingSqrt;
+            const h = origin.height() * scalingSqrt;
+            added.style('width', w);
+            added.style('height', h);
+
+
+            const edgesAdded = g.add([ {group: 'edges', data: { /*id: originID+'_'+key, */source: originID, target: key }}]);
+            //console.log(edgesAdded);
+        }
+
+
+        //HACK
+        if (!positioned) {
+            added.layout({name:'random', fit:false, boundingBox: g.extent()}).run();
+            //layout();
+        }
+    };
+
     const map = new LRUMap({
         maxSize: 512,
         accessUpdatesTimestamp: true,
-        onAdd: (key,value)=>{
-
-            console.log('add', key, value);
-
-
-
-
-            var a;
-            if (typeof value==="string" && !isHTMLish(value)) {
-                //raw label
-                a = {
-                    group: 'nodes',
-                    data: { label: value }
-                };
-            } else  {
-                a = {
-                    group: 'nodes',
-                    classes: 'html',
-                    data: {
-                        shape: value.shape || 'hexagon',
-                        //shape: 'rectangle',
-                        tpl: nodizer }
-                };
-
-            }
-
-            //add metaframe layer
-            a.classes = a.classes ? a.classes + " frame" : "frame";
-
-            var positioned;
-            if (value.pos && typeof(value.pos)=="object") {
-                positioned = true;
-                a.position = value.pos;
-            } else
-                positioned = false;
-
-            a.data.value = value;
-            a.data.id = key;
-
-            var added = g.add([a]);
-
-            if (value._grow) {
-                //apply grow
-                // TODO use destructuring
-                const originID = value._grow[0];
-                const scaling = value._grow[1];
-                if (originID == key)
-                    throw 'circular reference';
-                const origin = g.getElementById(originID);
-                if (origin.length === 0)
-                    throw 'origin node not found: ' + originID;
-
-
-                const scalingSqrt = Math.sqrt(scaling);
-                const w = origin.width() * scalingSqrt;
-                const h = origin.height() * scalingSqrt;
-                added.style('width', w);
-                added.style('height', h);
-
-
-                const edgesAdded = g.add([ {group: 'edges', data: { /*id: originID+'_'+key, */source: originID, target: key }}]);
-                //console.log(edgesAdded);
-            }
-
-            if (!positioned) {
-                added.layout({name:'random', fit:false, boundingBox: g.extent()}).run();
-                //layout();
-            }
-        },
+        onAdd: add,
         onRemove: (key,value)=>{
             console.log('rem', key, value);
             g.getElementById(key).remove();
@@ -188,6 +207,12 @@ function attention(g) {
         },
 
         put: function (k, x = k) {
+            if (x == k && typeof k === "object") {
+                const kid = k.id;
+                if (kid)
+                    k = kid; //extract id
+            }
+
             //if (!this.map.has(k)) {
             map.set(k, x);
             //}
@@ -386,7 +411,7 @@ function initDoubleClick(a) { //TODO not global func
     var lastClick = undefined;
     g.on('tap', e => lastClick = e.position); //HACK for saving the model coordinates for dblclick
 
-    const d = $(g._private.container);
+    const d = $(g.container());
     d.dblclick((e) => {
         const teContainer = $('<div/>');
         teContainer.css({
@@ -404,14 +429,14 @@ function initDoubleClick(a) { //TODO not global func
         });
         const te = textedit(teContainer[0]);
 
-        teContainer.pos = lastClick;
+        teContainer.pos = [ lastClick.x, lastClick.y ] ;
         teContainer.shape = 'rectangle'; //TODO none
 
         lastClick = undefined;
         //console.log(e);
         //te.setText(JSON.stringify(e.originalEvent, null));
 
-        teContainer.contentExpand = true;
+        teContainer.fill = true;
 
         a.put(uuid(), teContainer)
     });

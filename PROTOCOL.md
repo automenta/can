@@ -5,12 +5,12 @@
 # Raw Value
 Lowest common denominator input.
  * String
-   * HTML detected: attempts to parse as DOM element
+   * HTML detected: attempts to parse as DOM element :ok:
    * other markup detections: markdown, etc
  * Number
- * DOM element
- * JQuery expression - if the referred DOM is attached to a page, detaches from there prior to reattach 
- * JSON - editable with a default built-in JSON editor
+ * DOM element :ok:
+ * JQuery expression - if the referred DOM is attached to a page, detaches from there prior to reattach :ok: 
+ * JSON - editable with a default built-in JSON editor :ok:
  * JS source code - to be evaluated and/or called with certain args
 
 # Wrapped Value {
@@ -20,11 +20,13 @@ Lowest common denominator input.
 ### ._
 A JSON object with a key '_' pointing to a raw value,
 and any of the following modifiers specified in the following keys.
+:ok:
 
 ### .id 
 for a specific node identifier.  otherwise UUID will be generated
 if the node already exists it will be replaced unless the
 value is identical.
+:ok:
 
 ## Mode 
 ### .push = targetID
@@ -47,14 +49,21 @@ top-level nodes.
 
 ## Appearance
 
-### .width, .height
-for specific dimensions
+### .pos = [x, y]
+for specific absolute positioning
+:ok:
+
+### .size = [width, height]
+for specific absolute sizing
+:ok:
 
 ### .fill
 for DOM nodes, automatically sets the DOM's width and height property to its backing node's width and height when that changes 
+:ok:
 
 ### .shape
 rectangle, hexagon, circle, etc
+:ok:
 
 ### .color
 background shape color, as CSS string

@@ -151,10 +151,15 @@
             }),
             $('<button/>').text('Branch').click(() => {
                 a.put('sg1', 'Root');
+                a.put('sg2', {
+                   _: 'Branch',
+                   link: { from: 'sg1' },
+                   scale: [ 'sg1', 0.25 ]
+                });
 
-                const sub = {x: 3}; //'Grown';
-                sub._grow = ['sg1', 0.25];
-                a.put('sg2', sub);
+                // const sub = {x: 3}; //'Grown';
+                // sub._grow = ['sg1', 0.25];
+                // a.put('sg2', sub);
             }),
             $('<button/>').text('Sequence').click(() => {
                 var options = {
